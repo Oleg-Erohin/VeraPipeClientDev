@@ -1,0 +1,18 @@
+- Create interfaces in models folder per DTO in server
+    - Base material to joiner - Aviad
+    - Joint to standard/code - Oleg
+- Create ENUMs
+    - File type
+    - File extension
+    - Thickness UOM
+- Create components (List & editor for each)
+    - *Base material certificate
+    - *Filler material certificate
+    - Isometric (PDF viewer)
+    - P&ID (PDF viewer)
+    - Joiner
+    - NDT report
+    - *PWHT
+    - *Preheat
+    - Pressure test packs
+    - PSP
