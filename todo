@@ -1,10 +1,10 @@
 - Create interfaces in models folder per DTO in server
     - Base material to joiner - Aviad
-    - Joint to standard/code - Oleg
+    - Joint to standard/code - Oleg @done
 - Create ENUMs
     - File type
     - File extension
-    - Thickness UOM
+    - Thickness UOM @done
 - Create components (List & editor for each)
     - *Base material certificate
     - *Filler material certificate

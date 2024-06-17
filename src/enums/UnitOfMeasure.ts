@@ -1,0 +1,4 @@
+enum UnitOfMeasure {
+    MM,
+    SCH
+}
