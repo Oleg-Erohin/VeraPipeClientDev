@@ -2,11 +2,11 @@
     - Base material to joiner - Aviad
     - Joint to standard/code - Oleg @done
 - Create ENUMs
-    - File type
-    - File extension
+    - File type - Oleg
+    - File extension - Oleg
     - Thickness UOM @done
 - Create components (List & editor for each)
-    - *Base material certificate
+    - *Base material certificate - Oleg
     - *Filler material certificate
     - Isometric (PDF viewer)
     - P&ID (PDF viewer)

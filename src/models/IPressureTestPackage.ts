@@ -5,6 +5,6 @@ export interface IPressureTestPackage {
     name: number;
     pidNames: String[];
     isometricNames: String[];
-    coordinatesInPidsList: ICoordinate[]
+    coordinatesInPidsList: ICoordinate[];
     date: Date;
 }
