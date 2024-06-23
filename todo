@@ -1,6 +1,3 @@
-- Create interfaces in models folder per DTO in server
-    - Base material to joiner - Aviad
-    - Joint to standard/code - Oleg @done
 - Create components (List & editor for each)
     - *Base material certificate - Oleg @done
     - *Filler material certificate
@@ -8,12 +5,15 @@
     - P&ID (PDF viewer)
     - Joiner
     - NDT report
-    - *PWHT
-    - *Preheat
+    - *PWHT - Aviad
+    - *Preheat - Aviad
     - Pressure test packs
     - PSP
 
 Archive:
+- Create interfaces in models folder per DTO in server @done
+    - Base material to joiner - Aviad @done
+    - Joint to standard/code - Oleg @done
 - Create ENUMs @done
     - File type - Oleg @done
     - File extension - Oleg @done

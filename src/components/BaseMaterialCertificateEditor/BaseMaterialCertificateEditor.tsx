@@ -152,7 +152,7 @@ function BaseMaterialCertificateEditor() {
             <div>
                 <button
                     style={{
-                        cursor: isChangesMade ? 'pointer' : 'not-allowed'
+                        cursor: isChangesMade ? 'pointer' : 'not-allowed' //Temp solution until CSS
                     }}
                     onClick={onSaveChangesClicked}
                     disabled={!isChangesMade}>
