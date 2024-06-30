@@ -1,31 +1,27 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ActionType } from '../../redux/action-type';
 import axios from 'axios';
 import { IBaseMaterialCertificate } from '../../models/IBaseMaterialCertificate';
+import { AppState } from '../../redux/app-state';
 
 function BaseMaterialCertificatesList() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const [baseMaterialCertificates, setBaseMaterialCertificates] = useState<IBaseMaterialCertificate[]>([])
+    const baseMaterialCertificates: IBaseMaterialCertificate[] = useSelector((state: AppState) => state.baseMaterialCertificates);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isError, setIsError] = useState<boolean>(false);
 
     useEffect(() => {
         fetchData();
+        setIsLoading(false);
     }, []);
 
     async function fetchData() {
-        try {
-            await getBaseMaterialCertificates();
-        } catch (error) {
-            setIsError(true);
-        } finally {
-            setIsLoading(false);
-        }
+        await getBaseMaterialCertificates();
     }
 
     if (isLoading) {
@@ -39,10 +35,14 @@ function BaseMaterialCertificatesList() {
     async function getBaseMaterialCertificates() {
         try {
             const responseBaseMaterialCertificates = await axios.get(`http://localhost:8080/base-material-certificates`);
-            const baseMaterialCertificates = responseBaseMaterialCertificates.data;
-            setBaseMaterialCertificates(baseMaterialCertificates);
+            const baseMaterialCertificates: IBaseMaterialCertificate[] = responseBaseMaterialCertificates.data;
+            dispatch({
+                type: ActionType.UpdateBaseMaterialCertificates,
+                payload: { baseMaterialCertificates: baseMaterialCertificates }
+            });
         } catch (error: any) {
             console.error("Error fetching base material certificates:", error);
+            setIsError(true);
         }
     }
 

@@ -32,13 +32,8 @@ function BaseMaterialCertificateEditor() {
     }, []);
 
     async function fetchData() {
-        try {
             await getAllMaterialTypes();
-        } catch (error) {
-            setIsError(true);
-        } finally {
             setIsLoading(false);
-        }
     }
 
     if (isLoading) {
@@ -56,6 +51,7 @@ function BaseMaterialCertificateEditor() {
             setBaseMaterialTypes(baseMaterialTypes);
         } catch (error: any) {
             console.error("Error fetching base material types:", error);
+            setIsError(true);
         }
     }
 
@@ -156,7 +152,7 @@ function BaseMaterialCertificateEditor() {
                     }}
                     onClick={onSaveChangesClicked}
                     disabled={!isChangesMade}>
-                    Save Changes
+                    Save
                 </button>
                 {!isNewBaseMaterialCertificate && (
                     <button onClick={onDeleteClicked}>
