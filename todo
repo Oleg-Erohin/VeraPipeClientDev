@@ -9,8 +9,9 @@
     - *Preheat - Aviad
     - Pressure test packs
     - PSP
-- After saving Base Material Certificate to initiate editedBaseMaterialCertificate in app-state - Oleg
-- Add validation to delete - Oleg
+- After saving Base Material Certificate to initiate editedBaseMaterialCertificate in app-state - Oleg @done
+- Add confirmation to delete - Oleg @done
+
 Archive:
 - Create interfaces in models folder per DTO in server @done
     - Base material to joiner - Aviad @done

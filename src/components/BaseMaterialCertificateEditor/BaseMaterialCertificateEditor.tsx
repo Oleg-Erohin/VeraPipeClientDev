@@ -32,8 +32,8 @@ function BaseMaterialCertificateEditor() {
     }, []);
 
     async function fetchData() {
-            await getAllMaterialTypes();
-            setIsLoading(false);
+        await getAllMaterialTypes();
+        setIsLoading(false);
     }
 
     if (isLoading) {
@@ -73,6 +73,15 @@ function BaseMaterialCertificateEditor() {
             }
 
             updateBaseMaterialCertificatesState();
+            dispatch({
+                type: ActionType.EditBaseMaterialCertificate,
+                payload: {
+                    id: -1,
+                    heatNum: "",
+                    lotNum: "",
+                    materialTypeName: "",
+                }
+            })
 
             if (isNewBaseMaterialCertificate) {
                 alert("Base material certificate created successfully");
@@ -86,6 +95,11 @@ function BaseMaterialCertificateEditor() {
     };
 
     async function onDeleteClicked() {
+        const confirmDelete = window.confirm("Are you sure you want to delete this base material certificate?");
+        if (!confirmDelete) {
+            return;
+        }
+        
         try {
             await axios.delete(`http://localhost:8080/base-material-certificates/${formData.id}`);
             updateBaseMaterialCertificatesState();
