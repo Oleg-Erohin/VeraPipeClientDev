@@ -1,4 +1,4 @@
-enum FileType{
+export enum FileType{
     BASE_MATERIAL_CERTIFICATE = "BaseMaterialCertificate",
     FILLER_MATERIAL_CERTIFICATE = "FillerMaterialCertificate",
     ISOMETRIC = "Isometric",

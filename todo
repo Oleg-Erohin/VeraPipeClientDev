@@ -9,10 +9,12 @@
     - *Preheat - Aviad
     - Pressure test packs
     - PSP
-- After saving Base Material Certificate to initiate editedBaseMaterialCertificate in app-state - Oleg @done
-- Add confirmation to delete - Oleg @done
+- Add modeal to delete confirmation instead of window.confirm() - Oleg
+- Make editor modal inside list component and send data with props. Delete "edited" from redux - Oleg
 
 Archive:
+- After saving Base Material Certificate to initiate editedBaseMaterialCertificate in app-state - Oleg @done
+- Add confirmation to delete - Oleg @done
 - Create interfaces in models folder per DTO in server @done
     - Base material to joiner - Aviad @done
     - Joint to standard/code - Oleg @done

@@ -1,3 +1,3 @@
-enum FileExctension {
+export enum FileExtension {
     PDF
 }

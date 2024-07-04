@@ -153,7 +153,7 @@ function BaseMaterialCertificateEditor() {
                 >
                     <option value="">Select Material Type</option>
                     {baseMaterialTypes.map((type) => (
-                        <option key={type.id} value={type.name}>
+                        <option key={type.id} value={type.id}>
                             {type.name}
                         </option>
                     ))}
