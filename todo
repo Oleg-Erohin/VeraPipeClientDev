@@ -9,8 +9,8 @@
     - *Preheat - Aviad
     - Pressure test packs
     - PSP
-- Add modeal to delete confirmation instead of window.confirm() - Oleg
-- Make editor modal inside list component and send data with props. Delete "edited" from redux - Oleg
+- Add modeal to delete confirmation instead of window.confirm() - Oleg @done
+- Make editor modal inside list component and send data with props. Delete "edited" from redux - Oleg @done
 
 Archive:
 - After saving Base Material Certificate to initiate editedBaseMaterialCertificate in app-state - Oleg @done

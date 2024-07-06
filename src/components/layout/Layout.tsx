@@ -11,11 +11,13 @@ function Layout() {
     //     navigate('/');
     //   }, []);
 
-    return(
+    return (
         <div>
             <Routes>
-                <Route path = '/base_material_certificates' element = {<BaseMaterialCertificatesList/>}/>
-                <Route path = '/base_material_certificate_editor' element = {<BaseMaterialCertificateEditor/>}/>
+                <Route path='/' element={<BaseMaterialCertificatesList />} />
+
+                {/* <Route path = '/base_material_certificates' element = {<BaseMaterialCertificatesList/>}/> */}
+                {/* <Route path = '/base_material_certificate_editor' element = {<BaseMaterialCertificateEditor/>}/> */}
             </Routes>
         </div>
     );

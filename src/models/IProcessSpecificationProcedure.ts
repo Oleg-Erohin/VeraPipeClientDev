@@ -1,3 +1,5 @@
+import { UnitOfMeasure } from "../enums/UnitOfMeasure";
+
 export interface IProcessSpecificationProcedure {
     id: number;
     name: number;

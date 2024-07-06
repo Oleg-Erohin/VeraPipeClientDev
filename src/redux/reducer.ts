@@ -8,9 +8,9 @@ export function reduce(oldAppState: AppState = appStateInitialValue, action: Act
     let newAppState = { ...oldAppState };
 
     switch (action.type) {
-        case ActionType.EditBaseMaterialCertificate:
-            newAppState.editedBaseMaterialCertificate = action.payload.editedBaseMaterialCertificate;
-            break;
+        // case ActionType.EditBaseMaterialCertificate:
+        //     newAppState.editedBaseMaterialCertificate = action.payload.editedBaseMaterialCertificate;
+        //     break;
         case ActionType.UpdateBaseMaterialCertificates:
             newAppState.baseMaterialCertificates = action.payload.baseMaterialCertificates
     }

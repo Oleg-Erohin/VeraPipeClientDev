@@ -6,26 +6,43 @@ import { ActionType } from '../../redux/action-type';
 import { useNavigate } from 'react-router-dom';
 import { IBaseMaterialCertificate } from '../../models/IBaseMaterialCertificate';
 import { IBaseMaterialType } from '../../models/IBaseMaterialType';
+import Modal from 'react-modal';
 
-function BaseMaterialCertificateEditor() {
+interface BaseMaterialCertificateEditorProps {
+    props: IBaseMaterialCertificate;
+}
 
+function BaseMaterialCertificateEditor({ props }: BaseMaterialCertificateEditorProps) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const baseMaterialCertificate: IBaseMaterialCertificate = useSelector((state: AppState) => state.editedBaseMaterialCertificate);
+    Modal.setAppElement('#root');
+
+
+    // const baseMaterialCertificate: IBaseMaterialCertificate = useSelector((state: AppState) => state.editedBaseMaterialCertificate);
 
     const [isChangesMade, setIsChangesMade] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState<boolean>(false);
+    const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+    // const [formData, setFormData] = useState<IBaseMaterialCertificate>({
+    //     id: baseMaterialCertificate.id,
+    //     heatNum: baseMaterialCertificate.heatNum,
+    //     lotNum: baseMaterialCertificate.lotNum,
+    //     materialTypeName: baseMaterialCertificate.materialTypeName
+    // });
     const [formData, setFormData] = useState<IBaseMaterialCertificate>({
-        id: baseMaterialCertificate.id,
-        heatNum: baseMaterialCertificate.heatNum,
-        lotNum: baseMaterialCertificate.lotNum,
-        materialTypeName: baseMaterialCertificate.materialTypeName
+        id: props.id,
+        heatNum: props.heatNum,
+        lotNum: props.lotNum,
+        materialTypeName: props.materialTypeName
     });
+
     const [baseMaterialTypes, setBaseMaterialTypes] = useState<IBaseMaterialType[]>([]);
 
     const isNewBaseMaterialCertificate: boolean = formData.id == -1;
+
+    const selectedMaterialType = baseMaterialTypes.find(type => type.name == props.materialTypeName);
 
     useEffect(() => {
         fetchData();
@@ -43,6 +60,14 @@ function BaseMaterialCertificateEditor() {
     if (isError) {
         return <div>Error fetching base material certificates</div>;
     }
+
+    function openDeleteModal() {
+        setDeleteModalIsOpen(true);
+    };
+
+    function closeDeleteModal() {
+        setDeleteModalIsOpen(false);
+    };
 
     async function getAllMaterialTypes() {
         try {
@@ -73,15 +98,15 @@ function BaseMaterialCertificateEditor() {
             }
 
             updateBaseMaterialCertificatesState();
-            dispatch({
-                type: ActionType.EditBaseMaterialCertificate,
-                payload: {
-                    id: -1,
-                    heatNum: "",
-                    lotNum: "",
-                    materialTypeName: "",
-                }
-            })
+            // dispatch({
+            //     type: ActionType.EditBaseMaterialCertificate,
+            //     payload: {
+            //         id: -1,
+            //         heatNum: "",
+            //         lotNum: "",
+            //         materialTypeName: "",
+            //     }
+            // })
 
             if (isNewBaseMaterialCertificate) {
                 alert("Base material certificate created successfully");
@@ -94,17 +119,34 @@ function BaseMaterialCertificateEditor() {
         }
     };
 
+    // async function onDeleteClicked() {
+    //     const confirmDelete = window.confirm("Are you sure you want to delete this base material certificate?");
+    //     if (!confirmDelete) {
+    //         return;
+    //     }
+
+    //     try {
+    //         await axios.delete(`http://localhost:8080/base-material-certificates/${formData.id}`);
+    //         updateBaseMaterialCertificatesState();
+    //         alert("Base material certificate deleted successfully");
+    //         navigate(`/base_material_certificates`);
+    //     } catch (error: any) {
+    //         alert(error.response.data.errorMessage);
+    //     };
+    // };
+
     async function onDeleteClicked() {
-        const confirmDelete = window.confirm("Are you sure you want to delete this base material certificate?");
-        if (!confirmDelete) {
-            return;
-        }
-        
+        openDeleteModal();
+    };
+
+    async function onConfirmClicked() {
         try {
             await axios.delete(`http://localhost:8080/base-material-certificates/${formData.id}`);
             updateBaseMaterialCertificatesState();
             alert("Base material certificate deleted successfully");
-            navigate(`/base_material_certificates`);
+            // navigate(`/base_material_certificates`);
+            navigate(`/`);
+            window.location.reload();
         } catch (error: any) {
             alert(error.response.data.errorMessage);
         };
@@ -148,7 +190,7 @@ function BaseMaterialCertificateEditor() {
                 <label>Material Type:</label>
                 <select
                     name='materialTypeName'
-                    value={formData.materialTypeName}
+                    value={selectedMaterialType ? selectedMaterialType.id : ''}
                     onChange={inputChanged}
                 >
                     <option value="">Select Material Type</option>
@@ -157,8 +199,7 @@ function BaseMaterialCertificateEditor() {
                             {type.name}
                         </option>
                     ))}
-                </select>
-            </div>
+                </select>            </div>
             <div>
                 <button
                     style={{
@@ -174,6 +215,15 @@ function BaseMaterialCertificateEditor() {
                     </button>
                 )}
             </div>
+            <Modal isOpen={deleteModalIsOpen} onRequestClose={closeDeleteModal}>
+                <label>Are you sure you want to delete this base material certificate?</label>
+                <button onClick={onConfirmClicked}>
+                    Confirm
+                </button>
+                <button onClick={closeDeleteModal}>
+                    Return
+                </button>
+            </Modal>
         </div>
     );
 }

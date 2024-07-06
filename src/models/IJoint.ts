@@ -1,3 +1,4 @@
+import { UnitOfMeasure } from "../enums/UnitOfMeasure";
 import { ICoordinate } from "./ICoordinate";
 
 export interface IJoint {

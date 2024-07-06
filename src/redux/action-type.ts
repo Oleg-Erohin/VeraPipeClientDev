@@ -1,4 +1,4 @@
 export enum ActionType {
-    EditBaseMaterialCertificate = 'EditBaseMaterialCertificate',
+    // EditBaseMaterialCertificate = 'EditBaseMaterialCertificate',
     UpdateBaseMaterialCertificates = 'UpdateBaseMaterialCertificates',
 }
