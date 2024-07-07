@@ -1,9 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppState } from '../../redux/app-state';
 import axios from 'axios';
-import { ActionType } from '../../redux/action-type';
-import { useNavigate } from 'react-router-dom';
 import { IBaseMaterialCertificate } from '../../models/IBaseMaterialCertificate';
 import { IBaseMaterialType } from '../../models/IBaseMaterialType';
 import Modal from 'react-modal';
@@ -13,35 +9,21 @@ interface BaseMaterialCertificateEditorProps {
 }
 
 function BaseMaterialCertificateEditor({ props }: BaseMaterialCertificateEditorProps) {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     Modal.setAppElement('#root');
-
-
-    // const baseMaterialCertificate: IBaseMaterialCertificate = useSelector((state: AppState) => state.editedBaseMaterialCertificate);
 
     const [isChangesMade, setIsChangesMade] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState<boolean>(false);
     const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
-    // const [formData, setFormData] = useState<IBaseMaterialCertificate>({
-    //     id: baseMaterialCertificate.id,
-    //     heatNum: baseMaterialCertificate.heatNum,
-    //     lotNum: baseMaterialCertificate.lotNum,
-    //     materialTypeName: baseMaterialCertificate.materialTypeName
-    // });
     const [formData, setFormData] = useState<IBaseMaterialCertificate>({
         id: props.id,
         heatNum: props.heatNum,
         lotNum: props.lotNum,
         materialTypeName: props.materialTypeName
     });
-
     const [baseMaterialTypes, setBaseMaterialTypes] = useState<IBaseMaterialType[]>([]);
-
     const isNewBaseMaterialCertificate: boolean = formData.id == -1;
-
     const selectedMaterialType = baseMaterialTypes.find(type => type.name == props.materialTypeName);
 
     useEffect(() => {
@@ -97,43 +79,16 @@ function BaseMaterialCertificateEditor({ props }: BaseMaterialCertificateEditorP
                 await axios.put(`http://localhost:8080/base-material-certificates`, formData);
             }
 
-            updateBaseMaterialCertificatesState();
-            // dispatch({
-            //     type: ActionType.EditBaseMaterialCertificate,
-            //     payload: {
-            //         id: -1,
-            //         heatNum: "",
-            //         lotNum: "",
-            //         materialTypeName: "",
-            //     }
-            // })
-
             if (isNewBaseMaterialCertificate) {
                 alert("Base material certificate created successfully");
             } else {
                 alert("Base material certificate updated successfully");
             }
-            navigate(`/base_material_certificates`);
+            window.location.reload();
         } catch (error: any) {
             alert(error.response.data.errorMessage);
         }
     };
-
-    // async function onDeleteClicked() {
-    //     const confirmDelete = window.confirm("Are you sure you want to delete this base material certificate?");
-    //     if (!confirmDelete) {
-    //         return;
-    //     }
-
-    //     try {
-    //         await axios.delete(`http://localhost:8080/base-material-certificates/${formData.id}`);
-    //         updateBaseMaterialCertificatesState();
-    //         alert("Base material certificate deleted successfully");
-    //         navigate(`/base_material_certificates`);
-    //     } catch (error: any) {
-    //         alert(error.response.data.errorMessage);
-    //     };
-    // };
 
     async function onDeleteClicked() {
         openDeleteModal();
@@ -142,23 +97,11 @@ function BaseMaterialCertificateEditor({ props }: BaseMaterialCertificateEditorP
     async function onConfirmClicked() {
         try {
             await axios.delete(`http://localhost:8080/base-material-certificates/${formData.id}`);
-            updateBaseMaterialCertificatesState();
             alert("Base material certificate deleted successfully");
-            // navigate(`/base_material_certificates`);
-            navigate(`/`);
             window.location.reload();
         } catch (error: any) {
             alert(error.response.data.errorMessage);
         };
-    };
-
-    async function updateBaseMaterialCertificatesState() {
-        const responseBaseMaterialCertificates = await axios.get(`http://localhost:8080/base-material-certificates`);
-        const baseMaterialCertificates: IBaseMaterialCertificate[] = responseBaseMaterialCertificates.data;
-        dispatch({
-            type: ActionType.UpdateBaseMaterialCertificates,
-            payload: { baseMaterialCertificates: baseMaterialCertificates }
-        });
     };
 
     return (
