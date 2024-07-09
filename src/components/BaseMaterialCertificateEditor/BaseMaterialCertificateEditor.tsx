@@ -64,10 +64,22 @@ function BaseMaterialCertificateEditor({ props }: BaseMaterialCertificateEditorP
 
     function inputChanged(event: any) {
         const { name, value } = event.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
+
+        if (name == 'materialTypeName') {
+            const selectedType = baseMaterialTypes.find(type => type.id == parseInt(value));
+            if (selectedType) {
+                setFormData({
+                    ...formData,
+                    materialTypeName: selectedType.name,
+                });
+            }
+        } else {
+            setFormData({
+                ...formData,
+                [name]: value,
+            });
+        }
+
         setIsChangesMade(true);
     };
 
