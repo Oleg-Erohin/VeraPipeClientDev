@@ -3,6 +3,7 @@ import axios from 'axios';
 import { IBaseMaterialCertificate } from '../../models/IBaseMaterialCertificate';
 import { IBaseMaterialType } from '../../models/IBaseMaterialType';
 import Modal from 'react-modal';
+import { Notifications } from '../../enums/Notificatios';
 
 interface BaseMaterialCertificateEditorProps {
     props: IBaseMaterialCertificate;
@@ -94,7 +95,7 @@ function BaseMaterialCertificateEditor({ props }: BaseMaterialCertificateEditorP
             if (isNewBaseMaterialCertificate) {
                 alert("Base material certificate created successfully");
             } else {
-                alert("Base material certificate updated successfully");
+                alert(Notifications.BASE_MATERIAL_CERTIFICATE_UPDATE);
             }
             window.location.reload();
         } catch (error: any) {
