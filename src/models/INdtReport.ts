@@ -1,6 +1,8 @@
+import { INdtType } from "./INdtType";
+
 export interface INdtReport {
     id: number;
     name: number;
-    NdtTypeName: string;
+    NdtType: INdtType;
     date: Date;
 }

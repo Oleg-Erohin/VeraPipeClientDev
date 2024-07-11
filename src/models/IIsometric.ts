@@ -1,9 +1,10 @@
 import { ICoordinate } from "./ICoordinate";
+import { IPid } from "./IPid";
 
 export interface IIsometric{
     id: number;
     name: string;
-    pidsAndSheets: Map<string,number[]>;
+    pidsAndSheets: Map<IPid,number[]>;
     revision: string;
     date: Date;
     sheets: number;

@@ -1,13 +1,17 @@
+import { UnitOfMeasure } from "../enums/UnitOfMeasure";
+import { IBaseMaterialType } from "./IBaseMaterialType";
+import { IFusionProcess } from "./IFusionProcess";
+import { IJointDesign } from "./IJointDesign";
+
 export interface IJoiner{
     id: number;
     tagId: string;
-    certifiedDiameterMinMm: number;
-    certifiedDiameterMaxMm: number;
-    certifiedDiameterMinInch: number;
-    certifiedDiameterMaxInch: number;
+    uom: UnitOfMeasure;
+    certifiedDiameterMin: number;
+    certifiedDiameterMax: number;
     maxDepositedMaterial: number;
-    baseMaterialTypeName1: string;
-    baseMaterialTypeName2: string;
-    jointDesignName: string;
-    fusionProcessName: string;
+    baseMaterialType1: IBaseMaterialType;
+    baseMaterialType2: IBaseMaterialType;
+    jointDesign: IJointDesign;
+    fusionProcess: IFusionProcess;
 }

@@ -1,6 +1,8 @@
+import { IProcessSpecificationProcedure } from "./IProcessSpecificationProcedure";
+
 export interface IPreheat {
     id: number;
     name: number;
-    processSpecificationProcedureName: string;
+    processSpecificationProcedure: IProcessSpecificationProcedure;
     date: Date;
 }

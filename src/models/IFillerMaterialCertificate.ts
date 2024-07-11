@@ -1,5 +1,7 @@
+import { IFillerMaterialType } from "./IFillerMaterialType";
+
 export interface IFillerMaterialCertificate{
     id: number;
     heatNum: string;
-    materialTypeName: string;
+    fillerMaterialType: IFillerMaterialType;
 }

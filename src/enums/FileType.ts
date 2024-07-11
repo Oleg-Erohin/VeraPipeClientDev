@@ -9,5 +9,4 @@ export enum FileType{
     PREHEAT = "Preheat",
     PRESSURE_TEST_PACKAGE = "PressureTestPackage",
     PROCESS_SPECIFICATION_PROCEDURE = "ProcessSpecificationProcedure",
-    PROCESS_QUALIFICATION_RECORD = "ProcessQualificationRecord"
 }

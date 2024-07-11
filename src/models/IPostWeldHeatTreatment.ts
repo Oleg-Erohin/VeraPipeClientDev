@@ -1,6 +1,8 @@
+import { IProcessSpecificationProcedure } from "./IProcessSpecificationProcedure";
+
 export interface IPostWeldHeatTreatment {
     id: number;
     name: number;
-    processSpecificationProcedureName: string;
+    processSpecificationProcedure: IProcessSpecificationProcedure;
     date: Date;
 }

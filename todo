@@ -13,7 +13,7 @@
 - Make all "Alert" notifications as modals - Aviad
     - Create Notification component and use as modal
     - Finish Notifications enum
-- Change all identifying data in interfaces to object type variables - Oleg
+- Change all identifying data in interfaces to object type variables - Oleg @done
 - Add File functionality in BaseMaterialCertificate component
 
 Archive:
