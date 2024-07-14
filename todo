@@ -9,14 +9,14 @@
     - *Preheat - Aviad
     - Pressure test packs
     - PSP
-- Check why edit does not work in editor @done
-- Make all "Alert" notifications as modals - Aviad
-    - Create Notification component and use as modal
-    - Finish Notifications enum
-- Change all identifying data in interfaces to object type variables - Oleg @done
-- Add File functionality in BaseMaterialCertificate component
+- Add File functionality in BaseMaterialCertificate component - Aviad
 
 Archive:
+- Check why edit does not work in editor @done
+- Make all "Alert" notifications as modals - Aviad @done
+    - Create Notification component and use as modal @done
+    - Finish Notifications enum @done
+- Change all identifying data in interfaces to object type variables - Oleg @done
 - Add modeal to delete confirmation instead of window.confirm() - Oleg @done
 - Make editor modal inside list component and send data with props. Delete "edited" from redux - Oleg @done
 - After saving Base Material Certificate to initiate editedBaseMaterialCertificate in app-state - Oleg @done

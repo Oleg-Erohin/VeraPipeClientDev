@@ -98,7 +98,7 @@ function BaseMaterialCertificatesList() {
                                 <td>{baseMaterialCertificate.id}</td>
                                 <td>{baseMaterialCertificate.heatNum}</td>
                                 <td>{baseMaterialCertificate.lotNum}</td>
-                                <td>{baseMaterialCertificate.materialTypeName}</td>
+                                <td>{baseMaterialCertificate.baseMaterialType.name}</td>
                                 <td><button
                                     onClick={() => onEditClicked(baseMaterialCertificate)}
                                 >
