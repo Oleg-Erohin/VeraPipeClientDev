@@ -10,6 +10,8 @@
     - Pressure test packs
     - PSP
 - Add File functionality in BaseMaterialCertificate component - Aviad
+- Find how to present PDF - Aviad
+- Implement coordinates (using ICoordinate) - Aviad
 
 Archive:
 - Check why edit does not work in editor @done

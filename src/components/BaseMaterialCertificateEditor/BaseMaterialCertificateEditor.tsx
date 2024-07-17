@@ -25,9 +25,7 @@ function BaseMaterialCertificateEditor({
     lotNum: props.lotNum,
     baseMaterialType: props.baseMaterialType,
   });
-  const [baseMaterialTypes, setBaseMaterialTypes] = useState<
-    IBaseMaterialType[]
-  >([]);
+  const [baseMaterialTypes, setBaseMaterialTypes] = useState<IBaseMaterialType[]>([]);
   const isNewBaseMaterialCertificate: boolean = formData.id == -1;
   const selectedMaterialType = baseMaterialTypes.find(
     (type) => type.name == props.materialTypeName
