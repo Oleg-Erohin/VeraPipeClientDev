@@ -12,6 +12,7 @@
 - Add File functionality in BaseMaterialCertificate component - Aviad
 - Find how to present PDF - Aviad
 - Implement coordinates (using ICoordinate) - Aviad
+- Create File editor component to use inside others editor components instead of file editing inside each component - Aviad
 
 Archive:
 - Check why edit does not work in editor @done

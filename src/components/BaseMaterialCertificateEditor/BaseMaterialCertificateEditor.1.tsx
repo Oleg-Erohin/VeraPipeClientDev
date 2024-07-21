@@ -7,12 +7,9 @@ import { Notifications } from "../../enums/Notificatios";
 import NotificationWindow from "../NotificationWindow/NotificationWindow";
 import { IFile } from "../../models/IFile";
 import { FileType } from "../../enums/FileType";
+import { BaseMaterialCertificateEditorProps } from "./BaseMaterialCertificateEditor";
 
-interface BaseMaterialCertificateEditorProps {
-  props: IBaseMaterialCertificate;
-}
-
-function BaseMaterialCertificateEditor({
+export function BaseMaterialCertificateEditor({
   props,
 }: BaseMaterialCertificateEditorProps) {
   Modal.setAppElement("#root");
@@ -27,7 +24,9 @@ function BaseMaterialCertificateEditor({
     lotNum: props.lotNum,
     baseMaterialType: props.baseMaterialType,
   });
-  const [baseMaterialTypes, setBaseMaterialTypes] = useState<IBaseMaterialType[]>([]);
+  const [baseMaterialTypes, setBaseMaterialTypes] = useState<
+    IBaseMaterialType[]
+  >([]);
   const isNewBaseMaterialCertificate: boolean = formData.id == -1;
   const [file, setfile] = useState<IFile>();
   const [isFileChanged, setIsFileChanged] = useState<boolean>(false);
@@ -45,7 +44,7 @@ function BaseMaterialCertificateEditor({
   async function fetchData() {
     await getAllMaterialTypes();
 
-    if(!isNewBaseMaterialCertificate){
+    if (!isNewBaseMaterialCertificate) {
       await getFile();
     }
 
@@ -73,15 +72,19 @@ function BaseMaterialCertificateEditor({
     }
   }
 
-  async function getFile(){
-    try{
-      const response = await axios.get(`http://localhost:8080/files`, {params: {
-        fileType: FileType.BASE_MATERIAL_CERTIFICATE,
-        resourceName: props.name, 
-      }})
-      setfile(response.data);
-
-    }catch(error:any){
+  async function getFile() {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/files/by-filters`,
+        {
+          params: {
+            fileType: FileType.BASE_MATERIAL_CERTIFICATE,
+            resourceName: props.name,
+          },
+        }
+      );
+      const formFile: IFile = {};
+    } catch (error: any) {
       console.error("Error fetching File: ", error);
     }
   }
@@ -96,7 +99,7 @@ function BaseMaterialCertificateEditor({
       if (selectedType) {
         setFormData({
           ...formData,
-          baseMaterialType: selectedType,
+          materialTypeName: selectedType.name,
         });
       }
     } else {
@@ -122,11 +125,7 @@ function BaseMaterialCertificateEditor({
           formData
         );
       }
-      if(isFileChanged){
-        await axios.post(
-          `http://localhost:8080/files`,
-          file
-        );
+      if (isFileChanged) {
       }
       if (isNewBaseMaterialCertificate) {
         setNotification(Notifications.BASE_MATERIAL_CERTIFICATE_CREATE);
@@ -154,15 +153,8 @@ function BaseMaterialCertificateEditor({
     }
   }
 
-  function fileChanged(event:any){
-    const uploadedFile:File = event.target.files[0];
-    const formFile:IFile = {
-      fileType: FileType.BASE_MATERIAL_CERTIFICATE,
-      resourceName: props.name,
-      revision:uploadedFile.name,
-      file: uploadedFile,
-    }
-    setfile(formFile);
+  function handleFileChanged(event: any) {
+    setfile(event.target.value);
     setIsFileChanged(true);
   }
 
@@ -207,13 +199,13 @@ function BaseMaterialCertificateEditor({
         </select>{" "}
       </div>
       <div>
-      {file && <p>File name: {file.revision}</p>}
-        <label>New File:</label>
-        <input 
-        type="file" 
-        accept="application/pdf" 
-        onChange={fileChanged} 
-      />
+        {file && <p>File name: {file.revision}</p>}
+        <label>File:</label>
+        <input
+          type="file"
+          accept="application/pdf"
+          onChange={handleFileChanged}
+        />
       </div>
       <div>
         <button
@@ -226,15 +218,18 @@ function BaseMaterialCertificateEditor({
           Save
         </button>
         {!isNewBaseMaterialCertificate && (
-          <button onClick={()=>setDeleteModalIsOpen(true)}>Delete</button>
+          <button onClick={() => setDeleteModalIsOpen(true)}>Delete</button>
         )}
       </div>
-      <Modal isOpen={deleteModalIsOpen} onRequestClose={()=>setDeleteModalIsOpen(false)}>
+      <Modal
+        isOpen={deleteModalIsOpen}
+        onRequestClose={() => setDeleteModalIsOpen(false)}
+      >
         <label>
           Are you sure you want to delete this base material certificate?
         </label>
         <button onClick={onDeleteConfirmClicked}>Confirm</button>
-        <button onClick={()=>setDeleteModalIsOpen(false)}>Return</button>
+        <button onClick={() => setDeleteModalIsOpen(false)}>Return</button>
       </Modal>
       <Modal isOpen={isNotificationModalOpen}>
         <NotificationWindow notification={notification} />
@@ -243,5 +238,3 @@ function BaseMaterialCertificateEditor({
     </div>
   );
 }
-
-export default BaseMaterialCertificateEditor;

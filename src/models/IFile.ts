@@ -1,10 +1,10 @@
 import { FileType } from "../enums/FileType";
 
 export interface IFile{
-    id: number;
+    id?: number;
     fileType: FileType;
     resourceName: string;
     revision: string;
-    file: string;
-    uploadDate: Date; //string?
+    file: File;
+    uploadDate?: Date; //string?
 }
