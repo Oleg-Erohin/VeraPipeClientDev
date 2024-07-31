@@ -11,20 +11,17 @@ import BaseMaterialCertificateEditor from "../BaseMaterialCertificateEditor/Base
 function BaseMaterialCertificatesList() {
   Modal.setAppElement("#root");
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   // const navigate = useNavigate();
 
-  const baseMaterialCertificates: IBaseMaterialCertificate[] = useSelector(
-    (state: AppState) => state.baseMaterialCertificates
-  );
-  const [baseMaterialCertificates2, setBaseMaterialCertificates2] = useState<
-    IBaseMaterialCertificate[]
-  >([]);
+  // const baseMaterialCertificates: IBaseMaterialCertificate[] = useSelector(
+  //   (state: AppState) => state.baseMaterialCertificates
+  // );
+  const [baseMaterialCertificates, setBaseMaterialCertificates2] = useState<IBaseMaterialCertificate[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
-  const [selectedCertificate, setSelectedCertificate] =
-    useState<IBaseMaterialCertificate | null>(null);
+  const [selectedCertificate, setSelectedCertificate] = useState<IBaseMaterialCertificate | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -89,7 +86,7 @@ function BaseMaterialCertificatesList() {
 
   return (
     <div className="BaseMaterialCertificatesList">
-      {baseMaterialCertificates2.length > 0 ? (
+      {baseMaterialCertificates.length > 0 ? (
         <table>
           <thead>
             <tr>
@@ -101,7 +98,7 @@ function BaseMaterialCertificatesList() {
             </tr>
           </thead>
           <tbody>
-            {baseMaterialCertificates2.map((baseMaterialCertificate) => (
+            {baseMaterialCertificates.map((baseMaterialCertificate) => (
               <tr key={baseMaterialCertificate.id}>
                 <td>{baseMaterialCertificate.id}</td>
                 <td>{baseMaterialCertificate.heatNum}</td>
