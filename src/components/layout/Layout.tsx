@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { useEffect } from "react";
-import BaseMaterialCertificateEditor from "../BaseMaterialCertificateEditor/BaseMaterialCertificateEditor.1";
+import BaseMaterialCertificateEditor from "../BaseMaterialCertificateEditor/BaseMaterialCertificateEditor";
 import BaseMaterialCertificatesList from "../BaseMaterialCertificatesList/BaseMaterialCertificatesList";
 
 function Layout() {

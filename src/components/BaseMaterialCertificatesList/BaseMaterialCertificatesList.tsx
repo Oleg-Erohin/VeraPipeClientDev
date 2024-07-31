@@ -6,7 +6,7 @@ import axios from "axios";
 import { IBaseMaterialCertificate } from "../../models/IBaseMaterialCertificate";
 import { AppState } from "../../redux/app-state";
 import Modal from "react-modal";
-import BaseMaterialCertificateEditor from "../BaseMaterialCertificateEditor/BaseMaterialCertificateEditor.1";
+import BaseMaterialCertificateEditor from "../BaseMaterialCertificateEditor/BaseMaterialCertificateEditor";
 
 function BaseMaterialCertificatesList() {
   Modal.setAppElement("#root");
@@ -17,6 +17,9 @@ function BaseMaterialCertificatesList() {
   const baseMaterialCertificates: IBaseMaterialCertificate[] = useSelector(
     (state: AppState) => state.baseMaterialCertificates
   );
+  const [baseMaterialCertificates2, setBaseMaterialCertificates2] = useState<
+    IBaseMaterialCertificate[]
+  >([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
@@ -57,10 +60,12 @@ function BaseMaterialCertificatesList() {
       );
       const baseMaterialCertificates: IBaseMaterialCertificate[] =
         responseBaseMaterialCertificates.data;
-      dispatch({
-        type: ActionType.UpdateBaseMaterialCertificates,
-        payload: { baseMaterialCertificates: baseMaterialCertificates },
-      });
+      debugger;
+      setBaseMaterialCertificates2(baseMaterialCertificates);
+      // dispatch({
+      //   type: ActionType.UpdateBaseMaterialCertificates,
+      //   payload: { baseMaterialCertificates: baseMaterialCertificates },
+      // });
     } catch (error: any) {
       console.error("Error fetching base material certificates:", error);
       setIsError(true);
@@ -84,19 +89,19 @@ function BaseMaterialCertificatesList() {
 
   return (
     <div className="BaseMaterialCertificatesList">
-      <table>
-        <thead>
-          <tr>
-            <td>ID</td>
-            <td>Heat #</td>
-            <td>Lot #</td>
-            <td>Material Type</td>
-            <td>Edit</td>
-          </tr>
-        </thead>
-        <tbody>
-          {baseMaterialCertificates.length > 0 ? (
-            baseMaterialCertificates.map((baseMaterialCertificate) => (
+      {baseMaterialCertificates2.length > 0 ? (
+        <table>
+          <thead>
+            <tr>
+              <td>ID</td>
+              <td>Heat #</td>
+              <td>Lot #</td>
+              <td>Material Type</td>
+              <td>Edit</td>
+            </tr>
+          </thead>
+          <tbody>
+            {baseMaterialCertificates2.map((baseMaterialCertificate) => (
               <tr key={baseMaterialCertificate.id}>
                 <td>{baseMaterialCertificate.id}</td>
                 <td>{baseMaterialCertificate.heatNum}</td>
@@ -110,15 +115,18 @@ function BaseMaterialCertificatesList() {
                   </button>
                 </td>
               </tr>
-            ))
-          ) : (
-            <p>No base material certificates available</p>
-          )}
-        </tbody>
-      </table>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <div>No base material certificates available</div>
+      )}
+
       <Modal isOpen={editModalIsOpen} onRequestClose={closeEditModal}>
         {selectedCertificate && (
-          <BaseMaterialCertificateEditor props={selectedCertificate} />
+          <BaseMaterialCertificateEditor
+            baseMaterialCertificate={selectedCertificate}
+          />
         )}
         <button onClick={closeEditModal}>Return</button>
       </Modal>
