@@ -99,7 +99,6 @@ function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
   }
 
   async function saveFile() {
-    debugger;
     if (validateFileData()) {
       try {
         await axios.post(`http://localhost:8080/files`, fileForm);
