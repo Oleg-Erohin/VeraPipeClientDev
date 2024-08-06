@@ -1,5 +1,5 @@
 export enum FileType{
-    BASE_MATERIAL_CERTIFICATE = "BaseMaterialCertificate",
+    BASE_MATERIAL_CERTIFICATE,
     FILLER_MATERIAL_CERTIFICATE = "FillerMaterialCertificate",
     ISOMETRIC = "Isometric",
     JOINER = "Joiner",

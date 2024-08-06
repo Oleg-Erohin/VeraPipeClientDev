@@ -17,7 +17,7 @@ function BaseMaterialCertificatesList() {
   // const baseMaterialCertificates: IBaseMaterialCertificate[] = useSelector(
   //   (state: AppState) => state.baseMaterialCertificates
   // );
-  const [baseMaterialCertificates, setBaseMaterialCertificates2] = useState<IBaseMaterialCertificate[]>([]);
+  const [baseMaterialCertificates, setBaseMaterialCertificates] = useState<IBaseMaterialCertificate[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
@@ -57,8 +57,7 @@ function BaseMaterialCertificatesList() {
       );
       const baseMaterialCertificates: IBaseMaterialCertificate[] =
         responseBaseMaterialCertificates.data;
-      debugger;
-      setBaseMaterialCertificates2(baseMaterialCertificates);
+      setBaseMaterialCertificates(baseMaterialCertificates);
       // dispatch({
       //   type: ActionType.UpdateBaseMaterialCertificates,
       //   payload: { baseMaterialCertificates: baseMaterialCertificates },

@@ -25,6 +25,7 @@ function BaseMaterialCertificateEditor(
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [formData, setFormData] = useState<IBaseMaterialCertificate>({
     id: props.baseMaterialCertificate.id,
+    name: props.baseMaterialCertificate.name,
     heatNum: props.baseMaterialCertificate.heatNum,
     lotNum: props.baseMaterialCertificate.lotNum,
     baseMaterialType: props.baseMaterialCertificate.baseMaterialType,
@@ -54,21 +55,16 @@ function BaseMaterialCertificateEditor(
 
   async function fetchData() {
     await getAllMaterialTypes();
-
     if (!isNewBaseMaterialCertificate) {
     }
-
     setIsLoading(false);
   }
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
   if (isError) {
     return <div>Error fetching base material certificates</div>;
   }
-
   async function getAllMaterialTypes() {
     try {
       const responseBaseMaterialTypes = await axios.get(
@@ -84,7 +80,6 @@ function BaseMaterialCertificateEditor(
 
   function inputChanged(event: any) {
     const { name, value } = event.target;
-
     if (name == "materialTypeName") {
       const selectedType = baseMaterialTypes.find(
         (type) => type.id == parseInt(value)
@@ -185,10 +180,10 @@ function BaseMaterialCertificateEditor(
         <label>Material Type:</label>
         <select
           name="materialTypeName"
-          value={props.baseMaterialCertificate.baseMaterialType ? props.baseMaterialCertificate.baseMaterialType.id : ""}
+          value={formData.baseMaterialType.id}
           onChange={inputChanged}
         >
-          <option value="">Select Material Type</option>
+          {formData.baseMaterialType.id == 0 &&<option value="">Select Material Type</option>}
           {baseMaterialTypes.map((type) => (
             <option key={type.id} value={type.id}>
               {type.name}
@@ -201,6 +196,7 @@ function BaseMaterialCertificateEditor(
           fileType={FileType.BASE_MATERIAL_CERTIFICATE}
           resourceId={props.baseMaterialCertificate.id}
           ref={fileEditorRef}
+          setIsChangesMade={setIsChangesMade}
         />
       </div>
       <div>

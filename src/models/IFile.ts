@@ -5,6 +5,6 @@ export interface IFile{
     fileType: FileType;
     resourceId: number;
     revision?: string;
-    file?: File;
+    file?: string;
     uploadDate?: Date; //string?
 }
