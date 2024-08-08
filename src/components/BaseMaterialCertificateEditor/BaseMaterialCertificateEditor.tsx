@@ -13,9 +13,7 @@ interface BaseMaterialCertificateEditorProps {
   baseMaterialCertificate: IBaseMaterialCertificate;
 }
 
-function BaseMaterialCertificateEditor(
-  props: BaseMaterialCertificateEditorProps
-) {
+function BaseMaterialCertificateEditor(props: BaseMaterialCertificateEditorProps) {
   Modal.setAppElement("#root");
 
   const fileEditorRef = useRef<IFileEditorPublicMethods>(null);
@@ -30,9 +28,7 @@ function BaseMaterialCertificateEditor(
     lotNum: props.baseMaterialCertificate.lotNum,
     baseMaterialType: props.baseMaterialCertificate.baseMaterialType,
   });
-  const [baseMaterialTypes, setBaseMaterialTypes] = useState<
-    IBaseMaterialType[]
-  >([]);
+  const [baseMaterialTypes, setBaseMaterialTypes] = useState<IBaseMaterialType[]>([]);
   const isNewBaseMaterialCertificate: boolean = formData.id == -1;
   // const [file, setfile] = useState<IFile>({
   //   id: 0,
@@ -59,12 +55,15 @@ function BaseMaterialCertificateEditor(
     }
     setIsLoading(false);
   }
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
+
   if (isError) {
     return <div>Error fetching base material certificates</div>;
   }
+  
   async function getAllMaterialTypes() {
     try {
       const responseBaseMaterialTypes = await axios.get(
