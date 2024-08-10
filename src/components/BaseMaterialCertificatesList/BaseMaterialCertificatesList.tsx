@@ -1,29 +1,21 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { ActionType } from "../../redux/action-type";
 import axios from "axios";
 import { IBaseMaterialCertificate } from "../../models/IBaseMaterialCertificate";
-import { AppState } from "../../redux/app-state";
 import Modal from "react-modal";
 import BaseMaterialCertificateEditor from "../BaseMaterialCertificateEditor/BaseMaterialCertificateEditor";
 import BaseMaterialCertificateFilters from "../BaseMaterialCertificateFilters/BaseMaterialCertificateFilters";
+import { IBaseMaterialCertificateFilter } from "../../filter_models/IBaseMaterialCertificate";
 
 function BaseMaterialCertificatesList() {
   Modal.setAppElement("#root");
 
-  // const dispatch = useDispatch();
-  // const navigate = useNavigate();
-
-  // const baseMaterialCertificates: IBaseMaterialCertificate[] = useSelector(
-  //   (state: AppState) => state.baseMaterialCertificates
-  // );
   const [baseMaterialCertificates, setBaseMaterialCertificates] = useState<IBaseMaterialCertificate[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
-  const [filtersModalIsOpen, setFiltersModalIsOpen] = useState(false);
   const [selectedCertificate, setSelectedCertificate] = useState<IBaseMaterialCertificate | null>(null);
+  const [filteredCertificates, setFilteredCertificates] = useState<IBaseMaterialCertificate[]>([]);
+  const [filtersModalIsOpen, setFiltersModalIsOpen] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -68,26 +60,48 @@ function BaseMaterialCertificatesList() {
       const baseMaterialCertificates: IBaseMaterialCertificate[] =
         responseBaseMaterialCertificates.data;
       setBaseMaterialCertificates(baseMaterialCertificates);
-      // dispatch({
-      //   type: ActionType.UpdateBaseMaterialCertificates,
-      //   payload: { baseMaterialCertificates: baseMaterialCertificates },
-      // });
+      setFilteredCertificates(baseMaterialCertificates);
     } catch (error: any) {
       console.error("Error fetching base material certificates:", error);
       setIsError(true);
     }
   }
 
-  // function onEditClicked(id: number) {
-  //     const editedBaseMaterialCertificate = baseMaterialCertificates.find(baseMaterialCertificate => baseMaterialCertificate.id === id);
-  //     if (editedBaseMaterialCertificate) {
-  //         dispatch({
-  //             type: ActionType.EditBaseMaterialCertificate,
-  //             payload: { editedBaseMaterialCertificate: editedBaseMaterialCertificate }
-  //         });
-  //         navigate(`/base_material_certificate_editor?Id=${id}`);
-  //     }
-  // };
+async function getFilteredBaseMaterialCertificates(filters: IBaseMaterialCertificateFilter) {
+  const params: Record<string, string | string[]> = {};
+
+  if (filters.names && filters.names.length > 0) {
+    params.names = filters.names;
+  }
+  if (filters.heatNums && filters.heatNums.length > 0) {
+    params.heatNums = filters.heatNums;
+  }
+  if (filters.lotNums && filters.lotNums.length > 0) {
+    params.lotNums = filters.lotNums;
+  }
+  if (filters.baseMaterialTypes && filters.baseMaterialTypes.length > 0) {
+    params.baseMaterialTypeNames = filters.baseMaterialTypes.map(type => type.name);
+  }
+
+  try {
+    debugger;
+    const responseBaseMaterialCertificates = await axios.get(
+      `http://localhost:8080/base-material-certificates/by-filters`, 
+      { params }
+    );
+    const tempBaseMaterialCertificates: IBaseMaterialCertificate[] = responseBaseMaterialCertificates.data;
+    setFilteredCertificates(tempBaseMaterialCertificates);
+  } catch (error: any) {
+    console.error("Error fetching filtered base material certificates:", error);
+    setIsError(true);
+  }
+}
+
+
+  function applyFilters(filters: IBaseMaterialCertificateFilter) {
+    getFilteredBaseMaterialCertificates(filters);
+    closeFiltersModal();
+  }
 
   function onEditClicked(baseMaterialCertificate: IBaseMaterialCertificate) {
     openEditModal(baseMaterialCertificate);
@@ -97,15 +111,13 @@ function BaseMaterialCertificatesList() {
     <div className="BaseMaterialCertificatesList">
       {baseMaterialCertificates.length > 0 ? (
         <>
-          <button
-            onClick={() => openFiltersModal()}
-          >
+          <button onClick={() => openFiltersModal()}>
             Filters
           </button>
           <table>
             <thead>
               <tr>
-                <td>ID</td>
+                <td>Name</td>
                 <td>Heat #</td>
                 <td>Lot #</td>
                 <td>Material Type</td>
@@ -113,16 +125,14 @@ function BaseMaterialCertificatesList() {
               </tr>
             </thead>
             <tbody>
-              {baseMaterialCertificates.map((baseMaterialCertificate) => (
+              {Array.isArray(filteredCertificates) && filteredCertificates.map((baseMaterialCertificate) => (
                 <tr key={baseMaterialCertificate.id}>
-                  <td>{baseMaterialCertificate.id}</td>
+                  <td>{baseMaterialCertificate.name}</td>
                   <td>{baseMaterialCertificate.heatNum}</td>
                   <td>{baseMaterialCertificate.lotNum}</td>
                   <td>{baseMaterialCertificate.baseMaterialType.name}</td>
                   <td>
-                    <button
-                      onClick={() => onEditClicked(baseMaterialCertificate)}
-                    >
+                    <button onClick={() => onEditClicked(baseMaterialCertificate)}>
                       Edit
                     </button>
                   </td>
@@ -137,15 +147,16 @@ function BaseMaterialCertificatesList() {
 
       <Modal isOpen={editModalIsOpen} onRequestClose={closeEditModal}>
         {selectedCertificate && (
-          <BaseMaterialCertificateEditor
-            baseMaterialCertificate={selectedCertificate}
-          />
+          <BaseMaterialCertificateEditor baseMaterialCertificate={selectedCertificate} />
         )}
         <button onClick={closeEditModal}>Return</button>
       </Modal>
+
       <Modal isOpen={filtersModalIsOpen} onRequestClose={closeFiltersModal}>
         <BaseMaterialCertificateFilters
-          baseMaterialCertificates={baseMaterialCertificates} />
+          baseMaterialCertificates={baseMaterialCertificates}
+          applyFilters={applyFilters}
+        />
         <button onClick={closeFiltersModal}>Return</button>
       </Modal>
     </div>
