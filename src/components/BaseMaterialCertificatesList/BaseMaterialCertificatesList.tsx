@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { ActionType } from "../../redux/action-type";
 import axios from "axios";
 import { IBaseMaterialCertificate } from "../../models/IBaseMaterialCertificate";
-import { AppState } from "../../redux/app-state";
 import Modal from "react-modal";
 import BaseMaterialCertificateEditor from "../BaseMaterialCertificateEditor/BaseMaterialCertificateEditor";
 import BaseMaterialCertificateFilters from "../BaseMaterialCertificateFilters/BaseMaterialCertificateFilters";
@@ -24,6 +20,13 @@ function BaseMaterialCertificatesList() {
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [filtersModalIsOpen, setFiltersModalIsOpen] = useState(false);
   const [selectedCertificate, setSelectedCertificate] = useState<IBaseMaterialCertificate | null>(null);
+  const [filteredCertificates, setFilteredCertificates] = useState<IBaseMaterialCertificate[]>([]);
+
+  const [selectedNames, setSelectedNames] = useState<string[]>([]);
+  const [selectedHeatNums, setSelectedHeatNums] = useState<string[]>([]);
+  const [selectedLotNums, setSelectedLotNums] = useState<string[]>([]);
+  const [selectedBaseMaterialTypes, setSelectedBaseMaterialTypes] = useState<string[]>([]);
+
 
   useEffect(() => {
     fetchData();
@@ -68,6 +71,7 @@ function BaseMaterialCertificatesList() {
       const baseMaterialCertificates: IBaseMaterialCertificate[] =
         responseBaseMaterialCertificates.data;
       setBaseMaterialCertificates(baseMaterialCertificates);
+      setFilteredCertificates(baseMaterialCertificates);
       // dispatch({
       //   type: ActionType.UpdateBaseMaterialCertificates,
       //   payload: { baseMaterialCertificates: baseMaterialCertificates },
@@ -105,7 +109,7 @@ function BaseMaterialCertificatesList() {
           <table>
             <thead>
               <tr>
-                <td>ID</td>
+                <td>Name</td>
                 <td>Heat #</td>
                 <td>Lot #</td>
                 <td>Material Type</td>
@@ -113,16 +117,14 @@ function BaseMaterialCertificatesList() {
               </tr>
             </thead>
             <tbody>
-              {baseMaterialCertificates.map((baseMaterialCertificate) => (
+              {filteredCertificates.map((baseMaterialCertificate) => (
                 <tr key={baseMaterialCertificate.id}>
-                  <td>{baseMaterialCertificate.id}</td>
+                  <td>{baseMaterialCertificate.name}</td>
                   <td>{baseMaterialCertificate.heatNum}</td>
                   <td>{baseMaterialCertificate.lotNum}</td>
                   <td>{baseMaterialCertificate.baseMaterialType.name}</td>
                   <td>
-                    <button
-                      onClick={() => onEditClicked(baseMaterialCertificate)}
-                    >
+                    <button onClick={() => onEditClicked(baseMaterialCertificate)}>
                       Edit
                     </button>
                   </td>
@@ -145,7 +147,20 @@ function BaseMaterialCertificatesList() {
       </Modal>
       <Modal isOpen={filtersModalIsOpen} onRequestClose={closeFiltersModal}>
         <BaseMaterialCertificateFilters
-          baseMaterialCertificates={baseMaterialCertificates} />
+          baseMaterialCertificates={baseMaterialCertificates}
+          onFilter={(filtered) => {
+            setFilteredCertificates(filtered);
+            closeFiltersModal();
+          }}
+          selectedNames={selectedNames}
+          setSelectedNames={setSelectedNames}
+          selectedHeatNums={selectedHeatNums}
+          setSelectedHeatNums={setSelectedHeatNums}
+          selectedLotNums={selectedLotNums}
+          setSelectedLotNums={setSelectedLotNums}
+          selectedBaseMaterialTypes={selectedBaseMaterialTypes}
+          setSelectedBaseMaterialTypes={setSelectedBaseMaterialTypes}
+        />
         <button onClick={closeFiltersModal}>Return</button>
       </Modal>
     </div>
