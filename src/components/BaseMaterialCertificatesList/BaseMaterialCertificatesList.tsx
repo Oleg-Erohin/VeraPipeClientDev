@@ -26,6 +26,17 @@ function BaseMaterialCertificatesList() {
   const [sortColumn, setSortColumn] = useState<keyof IBaseMaterialCertificate | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>("ascending");
 
+  const defaultBaseMaterialCertificate: IBaseMaterialCertificate = {
+    id: -1,
+    name: "",
+    heatNum: "",
+    lotNum: "",
+    baseMaterialType: {
+      id: -1,
+      name: "",
+    },
+  };
+
   useEffect(() => {
     fetchData();
     setIsLoading(false);
@@ -107,6 +118,7 @@ function BaseMaterialCertificatesList() {
       {baseMaterialCertificates.length > 0 ? (
         <>
           <button onClick={() => openFiltersModal()}>Filters</button>
+          <button onClick={() => onEditClicked(defaultBaseMaterialCertificate)}>Add new</button>
           <table>
             <thead>
               <tr>

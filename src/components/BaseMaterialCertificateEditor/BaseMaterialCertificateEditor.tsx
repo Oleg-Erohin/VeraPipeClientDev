@@ -7,7 +7,7 @@ import { Notifications } from "../../enums/Notificatios";
 import NotificationWindow from "../NotificationWindow/NotificationWindow";
 import { IFile } from "../../models/IFile";
 import { FileType } from "../../enums/FileType";
-import FileEditor, {IFileEditorPublicMethods} from "../FileEditor/FileEditor";
+import FileEditor, { IFileEditorPublicMethods } from "../FileEditor/FileEditor";
 
 interface BaseMaterialCertificateEditorProps {
   baseMaterialCertificate: IBaseMaterialCertificate;
@@ -63,7 +63,7 @@ function BaseMaterialCertificateEditor(props: BaseMaterialCertificateEditorProps
   if (isError) {
     return <div>Error fetching base material certificates</div>;
   }
-  
+
   async function getAllMaterialTypes() {
     try {
       const responseBaseMaterialTypes = await axios.get(
@@ -158,6 +158,15 @@ function BaseMaterialCertificateEditor(props: BaseMaterialCertificateEditorProps
         </div>
       )}
       <div>
+        <label>Name:</label>
+        <input
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={inputChanged}
+        />
+      </div>
+      <div>
         <label>Heat #:</label>
         <input
           type="text"
@@ -182,7 +191,10 @@ function BaseMaterialCertificateEditor(props: BaseMaterialCertificateEditorProps
           value={formData.baseMaterialType.id}
           onChange={inputChanged}
         >
-          {formData.baseMaterialType.id == 0 &&<option value="">Select Material Type</option>}
+          {formData.baseMaterialType.id == 0 && <option value="">Select Material Type</option>}
+          {isNewBaseMaterialCertificate && (
+            <option>Select</option>
+          )}
           {baseMaterialTypes.map((type) => (
             <option key={type.id} value={type.id}>
               {type.name}
