@@ -14,6 +14,8 @@
     - File - attached with resourceId instead of resourceName - Aviad
     - Create File editor component to use inside others editor components instead of file editing inside each component - Aviad
 - Implement coordinates (using ICoordinate) - Aviad
+- Add sorting to each column @done
+- Add "Add new" button
 
 Archive:
 - Check why edit does not work in editor @done

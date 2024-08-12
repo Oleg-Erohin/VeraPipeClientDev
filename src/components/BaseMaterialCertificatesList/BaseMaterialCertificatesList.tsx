@@ -5,15 +5,11 @@ import Modal from "react-modal";
 import BaseMaterialCertificateEditor from "../BaseMaterialCertificateEditor/BaseMaterialCertificateEditor";
 import BaseMaterialCertificateFilters from "../BaseMaterialCertificateFilters/BaseMaterialCertificateFilters";
 
+
 function BaseMaterialCertificatesList() {
   Modal.setAppElement("#root");
+  type SortOrder = "ascending" | "descending";
 
-  // const dispatch = useDispatch();
-  // const navigate = useNavigate();
-
-  // const baseMaterialCertificates: IBaseMaterialCertificate[] = useSelector(
-  //   (state: AppState) => state.baseMaterialCertificates
-  // );
   const [baseMaterialCertificates, setBaseMaterialCertificates] = useState<IBaseMaterialCertificate[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
@@ -27,6 +23,8 @@ function BaseMaterialCertificatesList() {
   const [selectedLotNums, setSelectedLotNums] = useState<string[]>([]);
   const [selectedBaseMaterialTypes, setSelectedBaseMaterialTypes] = useState<string[]>([]);
 
+  const [sortColumn, setSortColumn] = useState<keyof IBaseMaterialCertificate | null>(null);
+  const [sortOrder, setSortOrder] = useState<SortOrder>("ascending");
 
   useEffect(() => {
     fetchData();
@@ -72,47 +70,58 @@ function BaseMaterialCertificatesList() {
         responseBaseMaterialCertificates.data;
       setBaseMaterialCertificates(baseMaterialCertificates);
       setFilteredCertificates(baseMaterialCertificates);
-      // dispatch({
-      //   type: ActionType.UpdateBaseMaterialCertificates,
-      //   payload: { baseMaterialCertificates: baseMaterialCertificates },
-      // });
     } catch (error: any) {
       console.error("Error fetching base material certificates:", error);
       setIsError(true);
     }
   }
 
-  // function onEditClicked(id: number) {
-  //     const editedBaseMaterialCertificate = baseMaterialCertificates.find(baseMaterialCertificate => baseMaterialCertificate.id === id);
-  //     if (editedBaseMaterialCertificate) {
-  //         dispatch({
-  //             type: ActionType.EditBaseMaterialCertificate,
-  //             payload: { editedBaseMaterialCertificate: editedBaseMaterialCertificate }
-  //         });
-  //         navigate(`/base_material_certificate_editor?Id=${id}`);
-  //     }
-  // };
-
   function onEditClicked(baseMaterialCertificate: IBaseMaterialCertificate) {
     openEditModal(baseMaterialCertificate);
+  }
+
+  function handleSort(column: keyof IBaseMaterialCertificate) {
+    const newSortOrder = sortColumn === column && sortOrder === "ascending" ? "descending" : "ascending";
+
+    const sortedCertificates = [...filteredCertificates].sort((certificateA, certificateB) => {
+      let valueA = certificateA[column];
+      let valueB = certificateB[column];
+
+      if (column === "baseMaterialType") {
+        valueA = certificateA.baseMaterialType.name;
+        valueB = certificateB.baseMaterialType.name;
+      }
+
+      if (valueA < valueB) return newSortOrder === "ascending" ? -1 : 1;
+      if (valueA > valueB) return newSortOrder === "ascending" ? 1 : -1;
+      return 0;
+    });
+
+    setSortColumn(column);
+    setSortOrder(newSortOrder);
+    setFilteredCertificates(sortedCertificates);
   }
 
   return (
     <div className="BaseMaterialCertificatesList">
       {baseMaterialCertificates.length > 0 ? (
         <>
-          <button
-            onClick={() => openFiltersModal()}
-          >
-            Filters
-          </button>
+          <button onClick={() => openFiltersModal()}>Filters</button>
           <table>
             <thead>
               <tr>
-                <td>Name</td>
-                <td>Heat #</td>
-                <td>Lot #</td>
-                <td>Material Type</td>
+                <td onClick={() => handleSort("name")}>
+                  Name {sortColumn === "name" && (sortOrder === "ascending" ? "↑" : "↓")}
+                </td>
+                <td onClick={() => handleSort("heatNum")}>
+                  Heat # {sortColumn === "heatNum" && (sortOrder === "ascending" ? "↑" : "↓")}
+                </td>
+                <td onClick={() => handleSort("lotNum")}>
+                  Lot # {sortColumn === "lotNum" && (sortOrder === "ascending" ? "↑" : "↓")}
+                </td>
+                <td onClick={() => handleSort("baseMaterialType")}>
+                  Material Type {sortColumn === "baseMaterialType" && (sortOrder === "ascending" ? "↑" : "↓")}
+                </td>
                 <td>Edit</td>
               </tr>
             </thead>
@@ -124,9 +133,7 @@ function BaseMaterialCertificatesList() {
                   <td>{baseMaterialCertificate.lotNum}</td>
                   <td>{baseMaterialCertificate.baseMaterialType.name}</td>
                   <td>
-                    <button onClick={() => onEditClicked(baseMaterialCertificate)}>
-                      Edit
-                    </button>
+                    <button onClick={() => onEditClicked(baseMaterialCertificate)}>Edit</button>
                   </td>
                 </tr>
               ))}
@@ -139,9 +146,7 @@ function BaseMaterialCertificatesList() {
 
       <Modal isOpen={editModalIsOpen} onRequestClose={closeEditModal}>
         {selectedCertificate && (
-          <BaseMaterialCertificateEditor
-            baseMaterialCertificate={selectedCertificate}
-          />
+          <BaseMaterialCertificateEditor baseMaterialCertificate={selectedCertificate} />
         )}
         <button onClick={closeEditModal}>Return</button>
       </Modal>
