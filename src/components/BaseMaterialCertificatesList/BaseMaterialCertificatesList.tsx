@@ -26,6 +26,9 @@ function BaseMaterialCertificatesList() {
   const [sortColumn, setSortColumn] = useState<keyof IBaseMaterialCertificate | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>("ascending");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
+
   const defaultBaseMaterialCertificate: IBaseMaterialCertificate = {
     id: -1,
     name: "",
@@ -111,7 +114,24 @@ function BaseMaterialCertificatesList() {
     setSortColumn(column);
     setSortOrder(newSortOrder);
     setFilteredCertificates(sortedCertificates);
+    setCurrentPage(1)
   }
+
+  const indexOfLastCertificate = currentPage * itemsPerPage;
+  const indexOfFirstCertificate = indexOfLastCertificate - itemsPerPage;
+  const currentCertificates = filteredCertificates.slice(indexOfFirstCertificate, indexOfLastCertificate);
+
+  const nextPage = () => {
+    if (currentPage < Math.ceil(filteredCertificates.length / itemsPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
     <div className="BaseMaterialCertificatesList">
@@ -138,7 +158,7 @@ function BaseMaterialCertificatesList() {
               </tr>
             </thead>
             <tbody>
-              {filteredCertificates.map((baseMaterialCertificate) => (
+              {currentCertificates.map((baseMaterialCertificate) => (
                 <tr key={baseMaterialCertificate.id}>
                   <td>{baseMaterialCertificate.name}</td>
                   <td>{baseMaterialCertificate.heatNum}</td>
@@ -151,6 +171,17 @@ function BaseMaterialCertificatesList() {
               ))}
             </tbody>
           </table>
+          <div className="pagination">
+            <button onClick={prevPage} disabled={currentPage === 1}>
+              Previous
+            </button>
+            <span>
+              Page {currentPage} of {Math.ceil(filteredCertificates.length / itemsPerPage)}
+            </span>
+            <button onClick={nextPage} disabled={currentPage === Math.ceil(filteredCertificates.length / itemsPerPage)}>
+              Next
+            </button>
+          </div>
         </>
       ) : (
         <div>No base material certificates available</div>
@@ -167,6 +198,7 @@ function BaseMaterialCertificatesList() {
           baseMaterialCertificates={baseMaterialCertificates}
           onFilter={(filtered) => {
             setFilteredCertificates(filtered);
+            setCurrentPage(1);
             closeFiltersModal();
           }}
           selectedNames={selectedNames}
