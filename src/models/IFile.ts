@@ -2,8 +2,8 @@ import { FileType } from "../enums/FileType";
 
 export interface IFile {
   id?: number;
-  name?:string;
-  strFileType: FileType;
+  name?: string;
+  strFileType: string;
   resourceId: number;
   revision?: string;
   file?: string;

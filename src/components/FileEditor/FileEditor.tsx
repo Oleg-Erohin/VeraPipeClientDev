@@ -78,13 +78,14 @@ function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
       reader.onload = (event) => {
         const base64PDF = event.target?.result as string;
         const newPDFData = base64PDF.split(",")[1];
-        setNewFileForm({ ...newFileForm, file: newPDFData });
+        setNewFileForm({ ...newFileForm, file: newPDFData, name: file.name });
       };
       reader.readAsDataURL(file);
     }
     if (props.setIsChangesMade) {
       props.setIsChangesMade(true);
     }
+    debugger;
   }
 
   function revisionChanged(event: any) {
@@ -100,6 +101,7 @@ function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
   }
 
   async function saveFile() {
+    debugger;
     if (validateFileData() && newFileForm.file) {
       try {
         await axios.post(`http://localhost:8080/files`, newFileForm);
@@ -131,7 +133,8 @@ function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
         {fileForm.revision && <p>File revision: {fileForm.revision}</p>}
       </div>
       <div>
-        <label>New File:</label><br />
+        <label>New File:</label>
+        <br />
         <input type="file" accept="application/pdf" onChange={fileChanged} />
         <input
           type="text"

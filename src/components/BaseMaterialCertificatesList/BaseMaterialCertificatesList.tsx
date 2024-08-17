@@ -7,7 +7,6 @@ import { FileType } from "../../enums/FileType";
 import FileDownloader from "../FileDownloader/FileDownloader";
 import BaseMaterialCertificateFilters from "../BaseMaterialCertificateFilters/BaseMaterialCertificateFilters";
 
-
 function BaseMaterialCertificatesList() {
   Modal.setAppElement("#root");
   type SortOrder = "ascending" | "descending";
@@ -15,20 +14,29 @@ function BaseMaterialCertificatesList() {
   // const baseMaterialCertificates: IBaseMaterialCertificate[] = useSelector(
   //   (state: AppState) => state.baseMaterialCertificates
   // );
-  const [baseMaterialCertificates, setBaseMaterialCertificates] = useState<IBaseMaterialCertificate[]>([]);
+  const [baseMaterialCertificates, setBaseMaterialCertificates] = useState<
+    IBaseMaterialCertificate[]
+  >([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [filtersModalIsOpen, setFiltersModalIsOpen] = useState(false);
-  const [selectedCertificate, setSelectedCertificate] = useState<IBaseMaterialCertificate | null>(null);
-  const [filteredCertificates, setFilteredCertificates] = useState<IBaseMaterialCertificate[]>([]);
+  const [selectedCertificate, setSelectedCertificate] =
+    useState<IBaseMaterialCertificate | null>(null);
+  const [filteredCertificates, setFilteredCertificates] = useState<
+    IBaseMaterialCertificate[]
+  >([]);
 
   const [selectedNames, setSelectedNames] = useState<string[]>([]);
   const [selectedHeatNums, setSelectedHeatNums] = useState<string[]>([]);
   const [selectedLotNums, setSelectedLotNums] = useState<string[]>([]);
-  const [selectedBaseMaterialTypes, setSelectedBaseMaterialTypes] = useState<string[]>([]);
+  const [selectedBaseMaterialTypes, setSelectedBaseMaterialTypes] = useState<
+    string[]
+  >([]);
 
-  const [sortColumn, setSortColumn] = useState<keyof IBaseMaterialCertificate | null>(null);
+  const [sortColumn, setSortColumn] = useState<
+    keyof IBaseMaterialCertificate | null
+  >(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>("ascending");
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -100,31 +108,39 @@ function BaseMaterialCertificatesList() {
   }
 
   function handleSort(column: keyof IBaseMaterialCertificate) {
-    const newSortOrder = sortColumn === column && sortOrder === "ascending" ? "descending" : "ascending";
+    const newSortOrder =
+      sortColumn === column && sortOrder === "ascending"
+        ? "descending"
+        : "ascending";
 
-    const sortedCertificates = [...filteredCertificates].sort((certificateA, certificateB) => {
-      let valueA = certificateA[column];
-      let valueB = certificateB[column];
+    const sortedCertificates = [...filteredCertificates].sort(
+      (certificateA, certificateB) => {
+        let valueA = certificateA[column];
+        let valueB = certificateB[column];
 
-      if (column === "baseMaterialType") {
-        valueA = certificateA.baseMaterialType.name;
-        valueB = certificateB.baseMaterialType.name;
+        if (column === "baseMaterialType") {
+          valueA = certificateA.baseMaterialType.name;
+          valueB = certificateB.baseMaterialType.name;
+        }
+
+        if (valueA < valueB) return newSortOrder === "ascending" ? -1 : 1;
+        if (valueA > valueB) return newSortOrder === "ascending" ? 1 : -1;
+        return 0;
       }
-
-      if (valueA < valueB) return newSortOrder === "ascending" ? -1 : 1;
-      if (valueA > valueB) return newSortOrder === "ascending" ? 1 : -1;
-      return 0;
-    });
+    );
 
     setSortColumn(column);
     setSortOrder(newSortOrder);
     setFilteredCertificates(sortedCertificates);
-    setCurrentPage(1)
+    setCurrentPage(1);
   }
 
   const indexOfLastCertificate = currentPage * itemsPerPage;
   const indexOfFirstCertificate = indexOfLastCertificate - itemsPerPage;
-  const currentCertificates = filteredCertificates.slice(indexOfFirstCertificate, indexOfLastCertificate);
+  const currentCertificates = filteredCertificates.slice(
+    indexOfFirstCertificate,
+    indexOfLastCertificate
+  );
 
   const nextPage = () => {
     if (currentPage < Math.ceil(filteredCertificates.length / itemsPerPage)) {
@@ -143,22 +159,33 @@ function BaseMaterialCertificatesList() {
       {baseMaterialCertificates.length > 0 ? (
         <>
           <button onClick={() => openFiltersModal()}>Filters</button>
-          <button onClick={() => onEditClicked(defaultBaseMaterialCertificate)}>Add new</button>
+          <button onClick={() => onEditClicked(defaultBaseMaterialCertificate)}>
+            Add new
+          </button>
           <table>
             <thead>
               <tr>
                 <td onClick={() => handleSort("name")}>
-                  Name {sortColumn === "name" && (sortOrder === "ascending" ? "↑" : "↓")}
+                  Name{" "}
+                  {sortColumn === "name" &&
+                    (sortOrder === "ascending" ? "↑" : "↓")}
                 </td>
                 <td onClick={() => handleSort("heatNum")}>
-                  Heat # {sortColumn === "heatNum" && (sortOrder === "ascending" ? "↑" : "↓")}
+                  Heat #{" "}
+                  {sortColumn === "heatNum" &&
+                    (sortOrder === "ascending" ? "↑" : "↓")}
                 </td>
                 <td onClick={() => handleSort("lotNum")}>
-                  Lot # {sortColumn === "lotNum" && (sortOrder === "ascending" ? "↑" : "↓")}
+                  Lot #{" "}
+                  {sortColumn === "lotNum" &&
+                    (sortOrder === "ascending" ? "↑" : "↓")}
                 </td>
                 <td onClick={() => handleSort("baseMaterialType")}>
-                  Material Type {sortColumn === "baseMaterialType" && (sortOrder === "ascending" ? "↑" : "↓")}
+                  Material Type{" "}
+                  {sortColumn === "baseMaterialType" &&
+                    (sortOrder === "ascending" ? "↑" : "↓")}
                 </td>
+                <td>File</td>
                 <td>Edit</td>
               </tr>
             </thead>
@@ -170,7 +197,19 @@ function BaseMaterialCertificatesList() {
                   <td>{baseMaterialCertificate.lotNum}</td>
                   <td>{baseMaterialCertificate.baseMaterialType.name}</td>
                   <td>
-                    <button onClick={() => onEditClicked(baseMaterialCertificate)}>Edit</button>
+                    {
+                      <FileDownloader
+                        fileType={FileType.BASE_MATERIAL_CERTIFICATE}
+                        resourceId={baseMaterialCertificate.id}
+                      />
+                    }
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => onEditClicked(baseMaterialCertificate)}
+                    >
+                      Edit
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -181,9 +220,16 @@ function BaseMaterialCertificatesList() {
               Previous
             </button>
             <span>
-              Page {currentPage} of {Math.ceil(filteredCertificates.length / itemsPerPage)}
+              Page {currentPage} of{" "}
+              {Math.ceil(filteredCertificates.length / itemsPerPage)}
             </span>
-            <button onClick={nextPage} disabled={currentPage === Math.ceil(filteredCertificates.length / itemsPerPage)}>
+            <button
+              onClick={nextPage}
+              disabled={
+                currentPage ===
+                Math.ceil(filteredCertificates.length / itemsPerPage)
+              }
+            >
               Next
             </button>
           </div>
@@ -194,7 +240,9 @@ function BaseMaterialCertificatesList() {
 
       <Modal isOpen={editModalIsOpen} onRequestClose={closeEditModal}>
         {selectedCertificate && (
-          <BaseMaterialCertificateEditor baseMaterialCertificate={selectedCertificate} />
+          <BaseMaterialCertificateEditor
+            baseMaterialCertificate={selectedCertificate}
+          />
         )}
         <button onClick={closeEditModal}>Return</button>
       </Modal>
