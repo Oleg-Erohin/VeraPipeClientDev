@@ -3,6 +3,8 @@ import axios from "axios";
 import { IBaseMaterialCertificate } from "../../models/IBaseMaterialCertificate";
 import Modal from "react-modal";
 import BaseMaterialCertificateEditor from "../BaseMaterialCertificateEditor/BaseMaterialCertificateEditor";
+import { FileType } from "../../enums/FileType";
+import FileDownloader from "../FileDownloader/FileDownloader";
 import BaseMaterialCertificateFilters from "../BaseMaterialCertificateFilters/BaseMaterialCertificateFilters";
 
 
@@ -10,6 +12,9 @@ function BaseMaterialCertificatesList() {
   Modal.setAppElement("#root");
   type SortOrder = "ascending" | "descending";
 
+  // const baseMaterialCertificates: IBaseMaterialCertificate[] = useSelector(
+  //   (state: AppState) => state.baseMaterialCertificates
+  // );
   const [baseMaterialCertificates, setBaseMaterialCertificates] = useState<IBaseMaterialCertificate[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);

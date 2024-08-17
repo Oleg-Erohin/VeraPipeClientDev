@@ -16,11 +16,15 @@ interface IFileEditor {
 
 function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
   const [fileForm, setFileForm] = useState<IFile>({
-    fileType: props.fileType,
+    strFileType: props.fileType,
+    resourceId: props.resourceId,
+  });
+  const [newFileForm, setNewFileForm] = useState<IFile>({
+    strFileType: props.fileType,
     resourceId: props.resourceId,
   });
   const [revisions, setRevisions] = useState<string[]>([]);
-  const [revision, setRevision] = useState<string>(props.revision || "");
+  // const [revision, setRevision] = useState<string>(props.revision || "");
   const [isValidRevision, setIsValidRevision] = useState<boolean>(false);
 
   useEffect(() => {
@@ -28,24 +32,22 @@ function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
   }, []);
 
   function fetchData() {
-    getFile();
+    getFileData();
     // getRevisions();
   }
 
-  async function getFile() {
+  async function getFileData() {
     try {
-      const response = await axios.get(`http://localhost:8080/files`, {
+      const response = await axios.get(`http://localhost:8080/files/get-data`, {
         params: {
           fileType: props.fileType,
           resourceId: props.resourceId,
-          revision: revision,
+          revision: props.revision,
         },
       });
-      if (response.data.file) {
+      debugger;
+      if (response.data.id) {
         setFileForm(response.data);
-      }
-      if (response.data.revision) {
-        setRevision(response.data.revision);
       }
     } catch (error: any) {
       console.error("Error fetching File: ", error);
@@ -71,37 +73,36 @@ function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
 
   function fileChanged(event: any) {
     const file: File = event.target.files[0];
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const base64PDF = event.target?.result as string;
-      const newPDFData = base64PDF.split(",")[1];
-      setFileForm({ ...fileForm, file: newPDFData });
-    };
-    reader.readAsDataURL(file);
-
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64PDF = event.target?.result as string;
+        const newPDFData = base64PDF.split(",")[1];
+        setNewFileForm({ ...newFileForm, file: newPDFData });
+      };
+      reader.readAsDataURL(file);
+    }
     if (props.setIsChangesMade) {
       props.setIsChangesMade(true);
     }
   }
 
   function revisionChanged(event: any) {
-    setRevision(event.target.value);
-    if (revision == "") {
+    if (newFileForm.revision == "") {
       setIsValidRevision(false);
     } else {
       setIsValidRevision(true);
     }
-    setFileForm({ ...fileForm, revision: revision });
+    setNewFileForm({ ...newFileForm, revision: event.target.value });
     if (props.setIsChangesMade) {
       props.setIsChangesMade(true);
     }
   }
 
   async function saveFile() {
-    if (validateFileData()) {
+    if (validateFileData() && newFileForm.file) {
       try {
-        await axios.post(`http://localhost:8080/files`, fileForm);
+        await axios.post(`http://localhost:8080/files`, newFileForm);
       } catch {
         console.log("can't save file");
       }
@@ -114,7 +115,7 @@ function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
     if (isValidRevision == false) {
       return false;
     }
-    if (!fileForm.file) {
+    if (!newFileForm.file) {
       return false;
     }
     return true;
@@ -130,7 +131,7 @@ function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
         {fileForm.revision && <p>File revision: {fileForm.revision}</p>}
       </div>
       <div>
-        <label>New File:</label>
+        <label>New File:</label><br />
         <input type="file" accept="application/pdf" onChange={fileChanged} />
         <input
           type="text"
