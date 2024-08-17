@@ -3,6 +3,7 @@ import { FileType } from "../../enums/FileType";
 import { IFile } from "../../models/IFile";
 import { Ref, useEffect, useState } from "react";
 import React, { forwardRef, useImperativeHandle } from "react";
+import PdfViewer from "../PDFViewer/PDFViewer";
 
 export interface IFileEditorPublicMethods {
   saveFile: () => void;
@@ -127,6 +128,37 @@ function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
     saveFile,
   }));
 
+  // For testing PDFViewer component only, after testing delete the next section untill the "return"
+  const [file, setFile] = useState<IFile>({
+    strFileType: props.fileType,
+    resourceId: props.resourceId,
+  });
+  const [fileBase64, setFileBase64] = useState<string>('');
+  async function getFile() {
+    try {
+      const response = await axios.get(`http://localhost:8080/files/get-file`, {
+        params: {
+          fileType: props.fileType,
+          resourceId: props.resourceId,
+          revision: props.revision,
+        },
+      });
+
+      if (response.data.id) {
+        setFile(response.data);
+      }
+    } catch (error: any) {
+      console.error("Error fetching File: ", error);
+    }
+  }
+  const [isFileShown, setIsFileShown] = useState<boolean>(false);
+  useEffect(() => {
+    if (file?.file) {
+      setFileBase64(file.file);
+      setIsFileShown(true);
+    }
+  }, [file]);
+
   return (
     <div>
       <div>
@@ -155,6 +187,12 @@ function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
           </select>
         </div>
       )}
+      <div>
+        <button onClick={getFile}>show PDF</button>
+        {isFileShown && (
+        <PdfViewer pdfBase64={fileBase64} />
+      )}
+      </div>
     </div>
   );
 }
