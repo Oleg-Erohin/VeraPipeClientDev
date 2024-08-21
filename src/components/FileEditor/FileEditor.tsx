@@ -4,6 +4,7 @@ import { IFile } from "../../models/IFile";
 import { Ref, useEffect, useState } from "react";
 import React, { forwardRef, useImperativeHandle } from "react";
 import PdfViewer from "../PDFViewer/PDFViewer";
+import { render } from "@testing-library/react";
 
 export interface IFileEditorPublicMethods {
   saveFile: () => void;

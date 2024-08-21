@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Document, Page } from 'react-pdf';
 import { pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
@@ -12,6 +12,10 @@ function PdfViewer({ pdfBase64 }: PdfViewerProps) {
     const isDragging = useRef(false);
     const dragStart = useRef({ x: 0, y: 0 });
     const scrollStart = useRef({ x: 0, y: 0 });
+    const [buttons, setButtons] = useState<{ x: number; y: number }[]>([]);
+    const [isPlacingButton, setIsPlacingButton] = useState(false);
+
+
 
     const base64ToBlob = (base64: string): Blob => {
         const byteCharacters = atob(base64);
@@ -68,6 +72,20 @@ function PdfViewer({ pdfBase64 }: PdfViewerProps) {
         }
     };
 
+    const onPdfClick = (e: React.MouseEvent) => {
+        if (isPlacingButton) {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            setButtons([...buttons, { x, y }]);
+            setIsPlacingButton(false);
+        }
+    };
+
+    function addButton(){
+        setIsPlacingButton(true);
+    };
+
     return (
         <div
             ref={scrollRef}
@@ -87,8 +105,43 @@ function PdfViewer({ pdfBase64 }: PdfViewerProps) {
                 file={pdfUrl}
                 onLoadError={(error) => console.error('Error loading PDF:', error)}
             >
-                <Page pageNumber={1} renderTextLayer={false}/>
+                <Page pageNumber={1} renderTextLayer={false} onClick={onPdfClick}/>
             </Document>
+
+            {buttons.map((button, index) => (
+                <div
+                    key={index}
+                    style={{
+                        position: 'absolute',
+                        left: button.x,
+                        top: button.y,
+                        width: '10px',
+                        height: '10px',
+                        backgroundColor: 'yellow',
+                        borderRadius: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        cursor: 'pointer',
+                    }}
+                    onClick={() => alert(`Button ${index + 1} clicked!`)}
+                />
+            ))}
+
+            <button
+                onClick={addButton}
+                style={{
+                    position: 'absolute',
+                    right: '20px',
+                    top: '20px',
+                    padding: '10px 20px',
+                    backgroundColor: '#007bff',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                }}
+            >
+                Add Button
+            </button>
         </div>
     );
 }
