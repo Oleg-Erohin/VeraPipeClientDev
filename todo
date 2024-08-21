@@ -1,21 +1,25 @@
 - Create components (List & editor for each)
     - *Base material certificate - Oleg @done
     - *Filler material certificate
-    - Isometric (PDF viewer)
+    - Isometric (PDF viewer) - Oleg
     - P&ID (PDF viewer)
     - Joiner
     - NDT report
-    - *PWHT - Aviad
-    - *Preheat - Aviad
+    - *PWHT
+    - *Preheat
     - Pressure test packs
     - PSP
 - Add File functionality in BaseMaterialCertificate component - Aviad
-    - Find how to present PDF - Aviad
-    - File - attached with resourceId instead of resourceName - Aviad
-    - Create File editor component to use inside others editor components instead of file editing inside each component - Aviad
+    - Find how to present PDF - Aviad @done
+    - File - attached with resourceId instead of resourceName - Aviad @done
+    - Create File editor component to use inside others editor components instead of file editing inside each component - Aviad @done
+    - Remove "previous revisions" when creating new component - Aviad
+    - Do not get previous files when creating new component - Aviad
 - Implement coordinates (using ICoordinate) - Aviad
+    - Change coordinates structure to be a point and not polygon - Oleg
+    - Make coordinates correspond with server - Oleg
 - Add sorting to each column @done
-- Add "Add new" button
+- Add "Add new" button @done
 
 Archive:
 - Check why edit does not work in editor @done

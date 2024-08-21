@@ -14,29 +14,20 @@ function BaseMaterialCertificatesList() {
   // const baseMaterialCertificates: IBaseMaterialCertificate[] = useSelector(
   //   (state: AppState) => state.baseMaterialCertificates
   // );
-  const [baseMaterialCertificates, setBaseMaterialCertificates] = useState<
-    IBaseMaterialCertificate[]
-  >([]);
+  const [baseMaterialCertificates, setBaseMaterialCertificates] = useState<IBaseMaterialCertificate[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [filtersModalIsOpen, setFiltersModalIsOpen] = useState(false);
-  const [selectedCertificate, setSelectedCertificate] =
-    useState<IBaseMaterialCertificate | null>(null);
-  const [filteredCertificates, setFilteredCertificates] = useState<
-    IBaseMaterialCertificate[]
-  >([]);
+  const [selectedCertificate, setSelectedCertificate] = useState<IBaseMaterialCertificate | null>(null);
+  const [filteredCertificates, setFilteredCertificates] = useState<IBaseMaterialCertificate[]>([]);
 
   const [selectedNames, setSelectedNames] = useState<string[]>([]);
   const [selectedHeatNums, setSelectedHeatNums] = useState<string[]>([]);
   const [selectedLotNums, setSelectedLotNums] = useState<string[]>([]);
-  const [selectedBaseMaterialTypes, setSelectedBaseMaterialTypes] = useState<
-    string[]
-  >([]);
+  const [selectedBaseMaterialTypes, setSelectedBaseMaterialTypes] = useState<string[]>([]);
 
-  const [sortColumn, setSortColumn] = useState<
-    keyof IBaseMaterialCertificate | null
-  >(null);
+  const [sortColumn, setSortColumn] = useState<keyof IBaseMaterialCertificate | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>("ascending");
 
   const [currentPage, setCurrentPage] = useState(1);
