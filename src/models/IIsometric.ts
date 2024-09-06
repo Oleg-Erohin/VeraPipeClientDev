@@ -1,14 +1,12 @@
-import { ICoordinate } from "./ICoordinate";
-import { IPid } from "./IPid";
+import { IIsometricLocationInPid } from "./IIsometricLocationInPid";
 
-export interface IIsometric{
+export interface IIsometric {
     id: number;
     name: string;
-    pidsAndSheets: Map<IPid,number[]>;
     revision: string;
     date: Date;
     sheets: number;
-    coordinatesInPid: ICoordinate[];
+    isometricLocationsInPids: IIsometricLocationInPid[];
     isApproved: boolean;
     comments: string;
 }

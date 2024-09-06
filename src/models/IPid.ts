@@ -1,6 +1,6 @@
 export interface IPid {
     id: number;
-    name: number;
+    name: string;
     revision: string;
     date: Date;
     sheets: number;

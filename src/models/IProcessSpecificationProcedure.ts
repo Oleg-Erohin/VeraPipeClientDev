@@ -7,7 +7,7 @@ import { IStandardCode } from "./IStandardCode";
 
 export interface IProcessSpecificationProcedure {
     id: number;
-    name: number;
+    name: String;
     jointDesign: IJointDesign;
     baseMaterial1: IBaseMaterialType;
     baseMaterial2: IBaseMaterialType;

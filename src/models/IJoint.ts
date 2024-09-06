@@ -6,6 +6,7 @@ import { IFillerMaterialCertificate } from "./IFillerMaterialCertificate";
 import { IFillerMaterialType } from "./IFillerMaterialType";
 import { IIsometric } from "./IIsometric";
 import { IJoiner } from "./IJoiner";
+import { IJointNdtWithResult } from "./IJointNdtWithResult";
 import { INdtReport } from "./INdtReport";
 import { IPid } from "./IPid";
 import { IPostWeldHeatTreatment } from "./IPostWeldHeatTreatment";
@@ -39,8 +40,7 @@ export interface IJoint {
     date: Date;
     isFitUpDone: boolean;
     isVisualInspectionDone: boolean;
-    ndtReport: INdtReport;
-    isNdtPassed: boolean;
+    ndtReportsWithResults: IJointNdtWithResult[];
     preheat: IPreheat;
     postWeldHeatTreatment: IPostWeldHeatTreatment;
     comments: string;
