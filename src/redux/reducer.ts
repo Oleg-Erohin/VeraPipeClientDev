@@ -12,7 +12,10 @@ export function reduce(oldAppState: AppState = appStateInitialValue, action: Act
         //     newAppState.editedBaseMaterialCertificate = action.payload.editedBaseMaterialCertificate;
         //     break;
         case ActionType.UpdateBaseMaterialCertificates:
-            newAppState.baseMaterialCertificates = action.payload.baseMaterialCertificates
+            newAppState.baseMaterialCertificates = action.payload.baseMaterialCertificates;
+            break;
+        case ActionType.UpdateNewCreatedComponentId:
+            newAppState.newCreatedComponentId = action.payload;
     }
     return newAppState;
 }

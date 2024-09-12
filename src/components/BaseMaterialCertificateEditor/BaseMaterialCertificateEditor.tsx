@@ -8,14 +8,19 @@ import NotificationWindow from "../NotificationWindow/NotificationWindow";
 import { IFile } from "../../models/IFile";
 import { FileType } from "../../enums/FileType";
 import FileEditor, { IFileEditorPublicMethods } from "../FileEditor/FileEditor";
+import { useDispatch } from "react-redux";
+import { ActionType } from "../../redux/action-type";
 
 interface BaseMaterialCertificateEditorProps {
   baseMaterialCertificate: IBaseMaterialCertificate;
 }
 
-function BaseMaterialCertificateEditor(props: BaseMaterialCertificateEditorProps) {
+function BaseMaterialCertificateEditor(
+  props: BaseMaterialCertificateEditorProps
+) {
   Modal.setAppElement("#root");
 
+  const dispatch = useDispatch(); // Redux dispatch to update the state
   const fileEditorRef = useRef<IFileEditorPublicMethods>(null);
   const [isChangesMade, setIsChangesMade] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -28,19 +33,10 @@ function BaseMaterialCertificateEditor(props: BaseMaterialCertificateEditorProps
     lotNum: props.baseMaterialCertificate.lotNum,
     baseMaterialType: props.baseMaterialCertificate.baseMaterialType,
   });
-  const [baseMaterialTypes, setBaseMaterialTypes] = useState<IBaseMaterialType[]>([]);
+  const [baseMaterialTypes, setBaseMaterialTypes] = useState<
+    IBaseMaterialType[]
+  >([]);
   const isNewBaseMaterialCertificate: boolean = formData.id == -1;
-  // const [file, setfile] = useState<IFile>({
-  //   id: 0,
-  //   fileType: FileType.BASE_MATERIAL_CERTIFICATE,
-  //   resourceId: props.baseMaterialCertificate.id,
-  //   revision: "",
-  //   file: null,
-  // });
-  // const [isFileChanged, setIsFileChanged] = useState<boolean>(false);
-  // const selectedMaterialType = baseMaterialTypes.find(
-  //   (type) => type.name == props.materialTypeName
-  // );
   const [notification, setNotification] = useState<string>("");
   const [isNotificationModalOpen, setIsNotificationModalOpen] =
     useState<boolean>(false);
@@ -102,11 +98,22 @@ function BaseMaterialCertificateEditor(props: BaseMaterialCertificateEditorProps
   async function onSaveChangesClicked() {
     try {
       if (isNewBaseMaterialCertificate) {
-        await axios.post(
+        const baseMaterialCertificate = await axios.post<IBaseMaterialCertificate>(
           `http://localhost:8080/base-material-certificates`,
           formData
         );
-      } else {
+  
+        if (baseMaterialCertificate && baseMaterialCertificate.data.id) {
+          // Update formData with the new ID
+          setFormData({ ...formData, id: baseMaterialCertificate.data.id });
+  
+          // Dispatch action to update the AppState with the new ID
+          dispatch({
+            type: ActionType.UpdateNewCreatedComponentId,
+            payload: baseMaterialCertificate.data.id,
+          });
+        }
+      }else {
         await axios.put(
           `http://localhost:8080/base-material-certificates`,
           formData
@@ -154,8 +161,12 @@ function BaseMaterialCertificateEditor(props: BaseMaterialCertificateEditorProps
     <div className="BaseMaterialCertificateEditor">
       {!isNewBaseMaterialCertificate && (
         <div>
+          <h2>Edit Base Material Certificate</h2>
           <label>Certificate #: {formData.id}</label>
         </div>
+      )}
+      {isNewBaseMaterialCertificate && (
+        <h2>Create Base Material Certificates</h2>
       )}
       <div>
         <label>Name:</label>
@@ -191,10 +202,10 @@ function BaseMaterialCertificateEditor(props: BaseMaterialCertificateEditorProps
           value={formData.baseMaterialType.id}
           onChange={inputChanged}
         >
-          {formData.baseMaterialType.id == 0 && <option value="">Select Material Type</option>}
-          {isNewBaseMaterialCertificate && (
-            <option>Select</option>
+          {formData.baseMaterialType.id == 0 && (
+            <option value="">Select Material Type</option>
           )}
+          {isNewBaseMaterialCertificate && <option>Select</option>}
           {baseMaterialTypes.map((type) => (
             <option key={type.id} value={type.id}>
               {type.name}
@@ -208,6 +219,7 @@ function BaseMaterialCertificateEditor(props: BaseMaterialCertificateEditorProps
           resourceId={props.baseMaterialCertificate.id}
           ref={fileEditorRef}
           setIsChangesMade={setIsChangesMade}
+          isNewComponent={isNewBaseMaterialCertificate}
         />
       </div>
       <div>

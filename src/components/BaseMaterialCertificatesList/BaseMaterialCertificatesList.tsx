@@ -6,6 +6,7 @@ import BaseMaterialCertificateEditor from "../BaseMaterialCertificateEditor/Base
 import { FileType } from "../../enums/FileType";
 import FileDownloader from "../FileDownloader/FileDownloader";
 import BaseMaterialCertificateFilters from "../BaseMaterialCertificateFilters/BaseMaterialCertificateFilters";
+import FileRevisionsPage from "../FileRevisionsPage/FileRevisionsPage";
 
 function BaseMaterialCertificatesList() {
   Modal.setAppElement("#root");
@@ -14,20 +15,29 @@ function BaseMaterialCertificatesList() {
   // const baseMaterialCertificates: IBaseMaterialCertificate[] = useSelector(
   //   (state: AppState) => state.baseMaterialCertificates
   // );
-  const [baseMaterialCertificates, setBaseMaterialCertificates] = useState<IBaseMaterialCertificate[]>([]);
+  const [baseMaterialCertificates, setBaseMaterialCertificates] = useState<
+    IBaseMaterialCertificate[]
+  >([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [filtersModalIsOpen, setFiltersModalIsOpen] = useState(false);
-  const [selectedCertificate, setSelectedCertificate] = useState<IBaseMaterialCertificate | null>(null);
-  const [filteredCertificates, setFilteredCertificates] = useState<IBaseMaterialCertificate[]>([]);
+  const [selectedCertificate, setSelectedCertificate] =
+    useState<IBaseMaterialCertificate | null>(null);
+  const [filteredCertificates, setFilteredCertificates] = useState<
+    IBaseMaterialCertificate[]
+  >([]);
 
   const [selectedNames, setSelectedNames] = useState<string[]>([]);
   const [selectedHeatNums, setSelectedHeatNums] = useState<string[]>([]);
   const [selectedLotNums, setSelectedLotNums] = useState<string[]>([]);
-  const [selectedBaseMaterialTypes, setSelectedBaseMaterialTypes] = useState<string[]>([]);
+  const [selectedBaseMaterialTypes, setSelectedBaseMaterialTypes] = useState<
+    string[]
+  >([]);
 
-  const [sortColumn, setSortColumn] = useState<keyof IBaseMaterialCertificate | null>(null);
+  const [sortColumn, setSortColumn] = useState<
+    keyof IBaseMaterialCertificate | null
+  >(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>("ascending");
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -147,12 +157,13 @@ function BaseMaterialCertificatesList() {
 
   return (
     <div className="BaseMaterialCertificatesList">
+      <h2>Base Material Certificates</h2>
+      <button onClick={() => onEditClicked(defaultBaseMaterialCertificate)}>
+        Add new
+      </button>
       {baseMaterialCertificates.length > 0 ? (
-        <>
+        <div>
           <button onClick={() => openFiltersModal()}>Filters</button>
-          <button onClick={() => onEditClicked(defaultBaseMaterialCertificate)}>
-            Add new
-          </button>
           <table>
             <thead>
               <tr>
@@ -178,6 +189,7 @@ function BaseMaterialCertificatesList() {
                 </td>
                 <td>File</td>
                 <td>Edit</td>
+                <td>Previous Revisions</td>
               </tr>
             </thead>
             <tbody>
@@ -202,6 +214,14 @@ function BaseMaterialCertificatesList() {
                       Edit
                     </button>
                   </td>
+                  <td>
+                    {
+                      <FileRevisionsPage
+                        fileType={FileType.BASE_MATERIAL_CERTIFICATE}
+                        resourceId={baseMaterialCertificate.id}
+                      />
+                    }
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -224,7 +244,7 @@ function BaseMaterialCertificatesList() {
               Next
             </button>
           </div>
-        </>
+        </div>
       ) : (
         <div>No base material certificates available</div>
       )}

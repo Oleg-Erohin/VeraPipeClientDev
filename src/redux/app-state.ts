@@ -9,4 +9,5 @@ export class AppState {
     //     lotNum: "",
     //     materialTypeName: "",
     // }
+    public newCreatedComponentId: number = -1;
 }

@@ -4,16 +4,17 @@ import { IFile } from "../../models/IFile";
 import { Ref, useEffect, useState } from "react";
 import React, { forwardRef, useImperativeHandle } from "react";
 import PdfViewer from "../PDFViewer/PDFViewer";
-import { render } from "@testing-library/react";
 
 export interface IFileEditorPublicMethods {
   saveFile: () => void;
+  validateFileData: () => void;
 }
 interface IFileEditor {
   fileType: FileType;
   resourceId: number;
   revision?: string;
   setIsChangesMade?: Function;
+  isNewComponent?: boolean;
 }
 
 function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
@@ -26,16 +27,26 @@ function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
     resourceId: props.resourceId,
   });
   const [revisions, setRevisions] = useState<string[]>([]);
-  // const [revision, setRevision] = useState<string>(props.revision || "");
   const [isValidRevision, setIsValidRevision] = useState<boolean>(false);
+  const isNewComponent = props.isNewComponent;
+
+  // Effect to update newFileForm when resourceId changes
+  useEffect(() => {
+    setNewFileForm((prevState) => ({
+      ...prevState,
+      resourceId: props.resourceId, // Update resourceId in newFileForm
+    }));
+  }, [props.resourceId]);
 
   useEffect(() => {
     fetchData();
   }, []);
 
   function fetchData() {
-    getFileData();
-    // getRevisions();
+    if (!isNewComponent) {
+      getFileData();
+      // getRevisions();
+    }
   }
 
   async function getFileData() {
@@ -47,7 +58,6 @@ function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
           revision: props.revision,
         },
       });
-      debugger;
       if (response.data.id) {
         setFileForm(response.data);
       }
@@ -55,23 +65,6 @@ function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
       console.error("Error fetching File: ", error);
     }
   }
-
-  // async function getRevisions() {
-  //   try {
-  //     const response = await axios.get(
-  //       `http://localhost:8080/files/revisions`,
-  //       {
-  //         params: {
-  //           fileType: props.fileType,
-  //           resourceId: props.resourceId,
-  //         },
-  //       }
-  //     );
-  //     setRevisions(response.data);
-  //   } catch (error: any) {
-  //     console.error("Error fetching revisions: ", error);
-  //   }
-  // }
 
   function fileChanged(event: any) {
     const file: File = event.target.files[0];
@@ -87,23 +80,21 @@ function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
     if (props.setIsChangesMade) {
       props.setIsChangesMade(true);
     }
-    debugger;
   }
 
   function revisionChanged(event: any) {
+    setNewFileForm({ ...newFileForm, revision: event.target.value });
+    if (props.setIsChangesMade) {
+      props.setIsChangesMade(true);
+    }
     if (newFileForm.revision == "") {
       setIsValidRevision(false);
     } else {
       setIsValidRevision(true);
     }
-    setNewFileForm({ ...newFileForm, revision: event.target.value });
-    if (props.setIsChangesMade) {
-      props.setIsChangesMade(true);
-    }
   }
 
   async function saveFile() {
-    debugger;
     if (validateFileData() && newFileForm.file) {
       try {
         await axios.post(`http://localhost:8080/files`, newFileForm);
@@ -124,17 +115,19 @@ function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
     }
     return true;
   }
+
   // Expose only specific functions to the parent
   useImperativeHandle(ref, () => ({
     saveFile,
+    validateFileData
   }));
 
-  // For testing PDFViewer component only, after testing delete the next section untill the "return"
+  // For testing PDFViewer component only, after testing delete the next section until the "return"
   const [file, setFile] = useState<IFile>({
     strFileType: props.fileType,
     resourceId: props.resourceId,
   });
-  const [fileBase64, setFileBase64] = useState<string>('');
+  const [fileBase64, setFileBase64] = useState<string>("");
   async function getFile() {
     try {
       const response = await axios.get(`http://localhost:8080/files/get-file`, {
@@ -163,9 +156,12 @@ function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
   return (
     <div>
       <div>
-        {fileForm.revision && <p>File revision: {fileForm.revision}</p>}
+        {fileForm.revision && (
+          <text>Current File revision: {fileForm.revision}</text>
+        )}
       </div>
       <div>
+        <br />
         <label>New File:</label>
         <br />
         <input type="file" accept="application/pdf" onChange={fileChanged} />
@@ -175,7 +171,7 @@ function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
           onChange={revisionChanged}
         />
       </div>
-      {revisions && (
+      {!isNewComponent && revisions.length > 1 && (
         <div>
           <label>Previous Revisions: </label>
           <select name="revisions">
@@ -188,13 +184,14 @@ function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
           </select>
         </div>
       )}
-      <div>
-        <button onClick={getFile}>show PDF</button>
-        {isFileShown && (
-        <PdfViewer pdfBase64={fileBase64} />
+      {!isNewComponent && (
+        <div>
+          <button onClick={getFile}>show PDF</button>
+          {isFileShown && <PdfViewer pdfBase64={fileBase64} />}
+        </div>
       )}
-      </div>
     </div>
   );
 }
+
 export default forwardRef(FileEditor);
