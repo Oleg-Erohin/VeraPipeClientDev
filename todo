@@ -15,8 +15,8 @@
     - Create File editor component to use inside others editor components instead of file editing inside each component - Aviad @done
     - Remove "previous revisions" when creating new component - Aviad @done
     - Do not get previous files when creating new component - Aviad @done
-    - Get revisions and "see previous revision" (button) (Aviad)
-    - Fix the resourceId in file when creating new component (props send id = -1 on create and real id on update)
+    - Get revisions and "see previous revision" (button) (Aviad) @done
+    - Fix the resourceId in file when creating new component (props send id = -1 on create and real id on update) (Aviad)
 - Implement coordinates (using ICoordinate) - Aviad
     - Change coordinates structure to be a point and not polygon - Oleg @done
     - Make coordinates correspond with server - Oleg @done
@@ -27,6 +27,8 @@
     - Get coordinates from specific object and the setCoordinates to edit (as props)
 - PDF Handler
     - For files that not require coordinates such as previouse revisions make it open in the browser in new window and not in our PDF viewer (Aviad)
+    - Open PDF in new Tab on the first click on "Open" (Aviad)
+- Move edit button to editor component (Oleg)
 
 Archive:
 - Check why edit does not work in editor @done
