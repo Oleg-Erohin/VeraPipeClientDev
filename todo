@@ -28,7 +28,7 @@
 - PDF Handler
     - For files that not require coordinates such as previouse revisions make it open in the browser in new window and not in our PDF viewer (Aviad)
     - Open PDF in new Tab on the first click on "Open" (Aviad)
-- Move edit button to editor component (Oleg)
+- Move edit button to editor component (Oleg) @done
 
 Archive:
 - Check why edit does not work in editor @done

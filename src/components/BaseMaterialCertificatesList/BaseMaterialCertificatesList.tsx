@@ -15,31 +15,19 @@ function BaseMaterialCertificatesList() {
   // const baseMaterialCertificates: IBaseMaterialCertificate[] = useSelector(
   //   (state: AppState) => state.baseMaterialCertificates
   // );
-  const [baseMaterialCertificates, setBaseMaterialCertificates] = useState<
-    IBaseMaterialCertificate[]
-  >([]);
+  const [baseMaterialCertificates, setBaseMaterialCertificates] = useState<IBaseMaterialCertificate[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [filtersModalIsOpen, setFiltersModalIsOpen] = useState(false);
-  const [selectedCertificate, setSelectedCertificate] =
-    useState<IBaseMaterialCertificate | null>(null);
-  const [filteredCertificates, setFilteredCertificates] = useState<
-    IBaseMaterialCertificate[]
-  >([]);
-
+  const [selectedCertificate, setSelectedCertificate] = useState<IBaseMaterialCertificate | null>(null);
+  const [filteredCertificates, setFilteredCertificates] = useState<IBaseMaterialCertificate[]>([]);
   const [selectedNames, setSelectedNames] = useState<string[]>([]);
   const [selectedHeatNums, setSelectedHeatNums] = useState<string[]>([]);
   const [selectedLotNums, setSelectedLotNums] = useState<string[]>([]);
-  const [selectedBaseMaterialTypes, setSelectedBaseMaterialTypes] = useState<
-    string[]
-  >([]);
-
-  const [sortColumn, setSortColumn] = useState<
-    keyof IBaseMaterialCertificate | null
-  >(null);
+  const [selectedBaseMaterialTypes, setSelectedBaseMaterialTypes] = useState<string[]>([]);
+  const [sortColumn, setSortColumn] = useState<keyof IBaseMaterialCertificate | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>("ascending");
-
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
 
@@ -71,10 +59,10 @@ function BaseMaterialCertificatesList() {
     return <div>Error fetching base material certificates</div>;
   }
 
-  function openEditModal(baseMaterialCertificate: IBaseMaterialCertificate) {
-    setSelectedCertificate(baseMaterialCertificate);
-    setEditModalIsOpen(true);
-  }
+  // function openEditModal(baseMaterialCertificate: IBaseMaterialCertificate) {
+  //   setSelectedCertificate(baseMaterialCertificate);
+  //   setEditModalIsOpen(true);
+  // }
 
   function closeEditModal() {
     setEditModalIsOpen(false);
@@ -104,9 +92,9 @@ function BaseMaterialCertificatesList() {
     }
   }
 
-  function onEditClicked(baseMaterialCertificate: IBaseMaterialCertificate) {
-    openEditModal(baseMaterialCertificate);
-  }
+  // function onEditClicked(baseMaterialCertificate: IBaseMaterialCertificate) {
+  //   openEditModal(baseMaterialCertificate);
+  // }
 
   function handleSort(column: keyof IBaseMaterialCertificate) {
     const newSortOrder =
@@ -158,9 +146,14 @@ function BaseMaterialCertificatesList() {
   return (
     <div className="BaseMaterialCertificatesList">
       <h2>Base Material Certificates</h2>
-      <button onClick={() => onEditClicked(defaultBaseMaterialCertificate)}>
+      {/* <button onClick={() => onEditClicked(defaultBaseMaterialCertificate)}>
         Add new
-      </button>
+      </button> */}
+      {
+        <BaseMaterialCertificateEditor
+          baseMaterialCertificate={defaultBaseMaterialCertificate}
+        />
+      }
       {baseMaterialCertificates.length > 0 ? (
         <div>
           <button onClick={() => openFiltersModal()}>Filters</button>
@@ -208,11 +201,16 @@ function BaseMaterialCertificatesList() {
                     }
                   </td>
                   <td>
-                    <button
+                    {/* <button
                       onClick={() => onEditClicked(baseMaterialCertificate)}
                     >
                       Edit
-                    </button>
+                    </button> */}
+                    {
+                      <BaseMaterialCertificateEditor
+                        baseMaterialCertificate={baseMaterialCertificate}
+                      />
+                    }
                   </td>
                   <td>
                     {

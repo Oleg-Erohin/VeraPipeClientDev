@@ -38,17 +38,19 @@ function BaseMaterialCertificateEditor(
   >([]);
   const isNewBaseMaterialCertificate: boolean = formData.id == -1;
   const [notification, setNotification] = useState<string>("");
-  const [isNotificationModalOpen, setIsNotificationModalOpen] =
-    useState<boolean>(false);
+  const [notificationModalIsOpen, setNotificationModalIsOpen] = useState<boolean>(false);
+  const [editModalIsOpen, setEditModalIsOpen] = useState(false);
 
   useEffect(() => {
     fetchData();
   }, []);
 
+  function openEditModal() {
+    setEditModalIsOpen(true);
+  }
+
   async function fetchData() {
     await getAllMaterialTypes();
-    if (!isNewBaseMaterialCertificate) {
-    }
     setIsLoading(false);
   }
 
@@ -102,18 +104,18 @@ function BaseMaterialCertificateEditor(
           `http://localhost:8080/base-material-certificates`,
           formData
         );
-  
+
         if (baseMaterialCertificate && baseMaterialCertificate.data.id) {
           // Update formData with the new ID
           setFormData({ ...formData, id: baseMaterialCertificate.data.id });
-  
+
           // Dispatch action to update the AppState with the new ID
           dispatch({
             type: ActionType.UpdateNewCreatedComponentId,
             payload: baseMaterialCertificate.data.id,
           });
         }
-      }else {
+      } else {
         await axios.put(
           `http://localhost:8080/base-material-certificates`,
           formData
@@ -129,10 +131,10 @@ function BaseMaterialCertificateEditor(
       }
       if (isNewBaseMaterialCertificate) {
         setNotification(Notifications.BASE_MATERIAL_CERTIFICATE_CREATE);
-        setIsNotificationModalOpen(true);
+        setNotificationModalIsOpen(true);
       } else {
         setNotification(Notifications.BASE_MATERIAL_CERTIFICATE_UPDATE);
-        setIsNotificationModalOpen(true);
+        setNotificationModalIsOpen(true);
       }
       window.location.reload();
     } catch (error: any) {
@@ -150,7 +152,7 @@ function BaseMaterialCertificateEditor(
         `http://localhost:8080/base-material-certificates/${formData.id}`
       );
       setNotification(Notifications.BASE_MATERIAL_CERTIFICATE_DELETE);
-      setIsNotificationModalOpen(true);
+      setNotificationModalIsOpen(true);
       window.location.reload();
     } catch (error: any) {
       alert(error.response.data.errorMessage);
@@ -159,96 +161,104 @@ function BaseMaterialCertificateEditor(
 
   return (
     <div className="BaseMaterialCertificateEditor">
-      {!isNewBaseMaterialCertificate && (
-        <div>
-          <h2>Edit Base Material Certificate</h2>
-          <label>Certificate #: {formData.id}</label>
-        </div>
-      )}
-      {isNewBaseMaterialCertificate && (
-        <h2>Create Base Material Certificates</h2>
-      )}
-      <div>
-        <label>Name:</label>
-        <input
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={inputChanged}
-        />
-      </div>
-      <div>
-        <label>Heat #:</label>
-        <input
-          type="text"
-          name="heatNum"
-          value={formData.heatNum}
-          onChange={inputChanged}
-        />
-      </div>
-      <div>
-        <label>Lot #:</label>
-        <input
-          type="text"
-          name="lotNum"
-          value={formData.lotNum}
-          onChange={inputChanged}
-        />
-      </div>
-      <div>
-        <label>Material Type:</label>
-        <select
-          name="materialTypeName"
-          value={formData.baseMaterialType.id}
-          onChange={inputChanged}
-        >
-          {formData.baseMaterialType.id == 0 && (
-            <option value="">Select Material Type</option>
-          )}
-          {isNewBaseMaterialCertificate && <option>Select</option>}
-          {baseMaterialTypes.map((type) => (
-            <option key={type.id} value={type.id}>
-              {type.name}
-            </option>
-          ))}
-        </select>{" "}
-      </div>
-      <div>
-        <FileEditor
-          fileType={FileType.BASE_MATERIAL_CERTIFICATE}
-          resourceId={props.baseMaterialCertificate.id}
-          ref={fileEditorRef}
-          setIsChangesMade={setIsChangesMade}
-          isNewComponent={isNewBaseMaterialCertificate}
-        />
-      </div>
-      <div>
-        <button
-          style={{
-            cursor: isChangesMade ? "pointer" : "not-allowed", //Temp solution until CSS
-          }}
-          onClick={onSaveChangesClicked}
-          disabled={!isChangesMade}
-        >
-          Save
-        </button>
-        {!isNewBaseMaterialCertificate && (
-          <button onClick={() => setDeleteModalIsOpen(true)}>Delete</button>
-        )}
-      </div>
+      <button onClick={() => openEditModal()}>
+        {isNewBaseMaterialCertificate ? "Add new" : "Edit"}
+      </button>
       <Modal
-        isOpen={deleteModalIsOpen}
-        onRequestClose={() => setDeleteModalIsOpen(false)}
+        isOpen={editModalIsOpen}
+        onRequestClose={() => setEditModalIsOpen(false)}
       >
-        <label>
-          Are you sure you want to delete this base material certificate?
-        </label>
-        <button onClick={onDeleteConfirmClicked}>Confirm</button>
-        <button onClick={() => setDeleteModalIsOpen(false)}>Return</button>
-      </Modal>
-      <Modal isOpen={isNotificationModalOpen}>
-        <NotificationWindow notification={notification} />
-        <button onClick={() => setIsNotificationModalOpen(false)}>Ok</button>
+        {!isNewBaseMaterialCertificate && (
+          <div>
+            <h2>Edit Base Material Certificate</h2>
+            <label>Certificate #: {formData.id}</label>
+          </div>
+        )}
+        {isNewBaseMaterialCertificate && (
+          <h2>Create Base Material Certificates</h2>
+        )}
+        <div>
+          <label>Name:</label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={inputChanged}
+          />
+        </div>
+        <div>
+          <label>Heat #:</label>
+          <input
+            type="text"
+            name="heatNum"
+            value={formData.heatNum}
+            onChange={inputChanged}
+          />
+        </div>
+        <div>
+          <label>Lot #:</label>
+          <input
+            type="text"
+            name="lotNum"
+            value={formData.lotNum}
+            onChange={inputChanged}
+          />
+        </div>
+        <div>
+          <label>Material Type:</label>
+          <select
+            name="materialTypeName"
+            value={formData.baseMaterialType.id}
+            onChange={inputChanged}
+          >
+            {formData.baseMaterialType.id == 0 && (
+              <option value="">Select Material Type</option>
+            )}
+            {isNewBaseMaterialCertificate && <option>Select</option>}
+            {baseMaterialTypes.map((type) => (
+              <option key={type.id} value={type.id}>
+                {type.name}
+              </option>
+            ))}
+          </select>{" "}
+        </div>
+        <div>
+          <FileEditor
+            fileType={FileType.BASE_MATERIAL_CERTIFICATE}
+            resourceId={props.baseMaterialCertificate.id}
+            ref={fileEditorRef}
+            setIsChangesMade={setIsChangesMade}
+            isNewComponent={isNewBaseMaterialCertificate}
+          />
+        </div>
+        <div>
+          <button
+            style={{
+              cursor: isChangesMade ? "pointer" : "not-allowed", //Temp solution until CSS
+            }}
+            onClick={onSaveChangesClicked}
+            disabled={!isChangesMade}
+          >
+            Save
+          </button>
+          {!isNewBaseMaterialCertificate && (
+            <button onClick={() => setDeleteModalIsOpen(true)}>Delete</button>
+          )}
+        </div>
+        <Modal
+          isOpen={deleteModalIsOpen}
+          onRequestClose={() => setDeleteModalIsOpen(false)}
+        >
+          <label>
+            Are you sure you want to delete this base material certificate?
+          </label>
+          <button onClick={onDeleteConfirmClicked}>Confirm</button>
+          <button onClick={() => setDeleteModalIsOpen(false)}>Return</button>
+        </Modal>
+        <Modal isOpen={notificationModalIsOpen}>
+          <NotificationWindow notification={notification} />
+          <button onClick={() => setNotificationModalIsOpen(false)}>Ok</button>
+        </Modal>
       </Modal>
     </div>
   );
