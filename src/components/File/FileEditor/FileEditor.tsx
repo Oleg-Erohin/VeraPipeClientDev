@@ -1,9 +1,9 @@
 import axios from "axios";
-import { FileType } from "../../enums/FileType";
-import { IFile } from "../../models/IFile";
+import { FileType } from "../../../enums/FileType";
+import { IFile } from "../../../models/IFile";
 import { Ref, useEffect, useState } from "react";
 import React, { forwardRef, useImperativeHandle } from "react";
-import PdfViewer from "../PDFViewer/PDFViewer";
+import PdfViewer from "../../PDFViewer/PDFViewer";
 
 export interface IFileEditorPublicMethods {
   saveFile: () => void;

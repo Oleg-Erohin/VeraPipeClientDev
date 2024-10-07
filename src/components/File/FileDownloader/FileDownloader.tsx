@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { FileType } from "../../enums/FileType";
+import { FileType } from "../../../enums/FileType";
 import axios from "axios";
-import { IBaseMaterialCertificate } from "../../models/IBaseMaterialCertificate";
-import { IFile } from "../../models/IFile";
+import { IBaseMaterialCertificate } from "../../../models/IBaseMaterialCertificate";
+import { IFile } from "../../../models/IFile";
 interface IFileDownloader {
   fileType: FileType;
   resourceId: number;

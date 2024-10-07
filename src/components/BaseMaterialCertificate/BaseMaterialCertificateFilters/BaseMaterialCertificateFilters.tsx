@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { IBaseMaterialCertificate } from "../../models/IBaseMaterialCertificate";
+import { IBaseMaterialCertificate } from "../../../models/IBaseMaterialCertificate";
 
 interface BaseMaterialCertificateFiltersProps {
   baseMaterialCertificates: IBaseMaterialCertificate[];

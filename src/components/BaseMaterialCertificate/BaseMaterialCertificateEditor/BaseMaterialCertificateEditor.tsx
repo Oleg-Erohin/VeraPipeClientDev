@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { IBaseMaterialCertificate } from "../../models/IBaseMaterialCertificate";
-import { IBaseMaterialType } from "../../models/IBaseMaterialType";
+import { IBaseMaterialCertificate } from "../../../models/IBaseMaterialCertificate";
+import { IBaseMaterialType } from "../../../models/IBaseMaterialType";
 import Modal from "react-modal";
-import { Notifications } from "../../enums/Notificatios";
-import NotificationWindow from "../NotificationWindow/NotificationWindow";
-import { IFile } from "../../models/IFile";
-import { FileType } from "../../enums/FileType";
-import FileEditor, { IFileEditorPublicMethods } from "../FileEditor/FileEditor";
+import { Notifications } from "../../../enums/Notificatios";
+import NotificationWindow from "../../NotificationWindow/NotificationWindow";
+import { IFile } from "../../../models/IFile";
+import { FileType } from "../../../enums/FileType";
+import FileEditor, { IFileEditorPublicMethods } from "../../File/FileEditor/FileEditor";
 import { useDispatch } from "react-redux";
-import { ActionType } from "../../redux/action-type";
+import { ActionType } from "../../../redux/action-type";
 
 interface BaseMaterialCertificateEditorProps {
   baseMaterialCertificate: IBaseMaterialCertificate;
@@ -20,7 +20,7 @@ function BaseMaterialCertificateEditor(
 ) {
   Modal.setAppElement("#root");
 
-  const dispatch = useDispatch(); // Redux dispatch to update the state
+  // const dispatch = useDispatch(); // Redux dispatch to update the state
   const fileEditorRef = useRef<IFileEditorPublicMethods>(null);
   const [isChangesMade, setIsChangesMade] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -33,9 +33,7 @@ function BaseMaterialCertificateEditor(
     lotNum: props.baseMaterialCertificate.lotNum,
     baseMaterialType: props.baseMaterialCertificate.baseMaterialType,
   });
-  const [baseMaterialTypes, setBaseMaterialTypes] = useState<
-    IBaseMaterialType[]
-  >([]);
+  const [baseMaterialTypes, setBaseMaterialTypes] = useState<IBaseMaterialType[]>([]);
   const isNewBaseMaterialCertificate: boolean = formData.id == -1;
   const [notification, setNotification] = useState<string>("");
   const [notificationModalIsOpen, setNotificationModalIsOpen] = useState<boolean>(false);
@@ -100,20 +98,17 @@ function BaseMaterialCertificateEditor(
   async function onSaveChangesClicked() {
     try {
       if (isNewBaseMaterialCertificate) {
-        const baseMaterialCertificate = await axios.post<IBaseMaterialCertificate>(
-          `http://localhost:8080/base-material-certificates`,
-          formData
-        );
+        const baseMaterialCertificate = await axios.post<IBaseMaterialCertificate>(`http://localhost:8080/base-material-certificates`, formData);
 
         if (baseMaterialCertificate && baseMaterialCertificate.data.id) {
           // Update formData with the new ID
           setFormData({ ...formData, id: baseMaterialCertificate.data.id });
 
           // Dispatch action to update the AppState with the new ID
-          dispatch({
-            type: ActionType.UpdateNewCreatedComponentId,
-            payload: baseMaterialCertificate.data.id,
-          });
+          // dispatch({
+          //   type: ActionType.UpdateNewCreatedComponentId,
+          //   payload: baseMaterialCertificate.data.id,
+          // });
         }
       } else {
         await axios.put(
@@ -225,7 +220,7 @@ function BaseMaterialCertificateEditor(
         <div>
           <FileEditor
             fileType={FileType.BASE_MATERIAL_CERTIFICATE}
-            resourceId={props.baseMaterialCertificate.id}
+            resourceId={formData.id}
             ref={fileEditorRef}
             setIsChangesMade={setIsChangesMade}
             isNewComponent={isNewBaseMaterialCertificate}

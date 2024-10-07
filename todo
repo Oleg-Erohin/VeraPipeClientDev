@@ -1,7 +1,7 @@
 - Create components (List & editor for each)
     - *Base material certificate - Oleg @done
     - *Filler material certificate
-    - Isometric (PDF viewer) - Oleg
+    - Isometric (PDF viewer)
     - P&ID (PDF viewer)
     - Joiner
     - NDT report
@@ -9,15 +9,17 @@
     - *Preheat
     - Pressure test packs
     - PSP
-- Add File functionality in BaseMaterialCertificate component - Aviad
+- Add File functionality in BaseMaterialCertificate component
     - Find how to present PDF - Aviad @done
     - File - attached with resourceId instead of resourceName - Aviad @done
     - Create File editor component to use inside others editor components instead of file editing inside each component - Aviad @done
     - Remove "previous revisions" when creating new component - Aviad @done
     - Do not get previous files when creating new component - Aviad @done
     - Get revisions and "see previous revision" (button) (Aviad) @done
-    - Fix the resourceId in file when creating new component (props send id = -1 on create and real id on update) (Aviad)
-- Implement coordinates (using ICoordinate) - Aviad
+    - Fix the resourceId in file when creating new component (props send id = -1 on create and real id on update) (Creating new component sends id -1 and file cannot be attached to this id)
+    - When downloading previous revisions the file is only downloading from second click. UseState issue. Use file downloader
+    - In FileRevfisionsPage delete all file downloader functionality
+- Implement coordinates (using ICoordinate)
     - Change coordinates structure to be a point and not polygon - Oleg @done
     - Make coordinates correspond with server - Oleg @done
 - Add sorting to each column @done
@@ -26,8 +28,8 @@
     - Create pagination (Aviad) @done
     - Get coordinates from specific object and the setCoordinates to edit (as props)
 - PDF Handler
-    - For files that not require coordinates such as previouse revisions make it open in the browser in new window and not in our PDF viewer (Aviad)
-    - Open PDF in new Tab on the first click on "Open" (Aviad)
+    - For files that not require coordinates such as previouse revisions make it open in the browser in new window and not in our PDF viewer
+    - Open PDF in new Tab on the first click on "Open"
 - Move edit button to editor component (Oleg) @done
 
 Archive:

@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { useEffect } from "react";
-import BaseMaterialCertificateEditor from "../BaseMaterialCertificateEditor/BaseMaterialCertificateEditor";
-import BaseMaterialCertificatesList from "../BaseMaterialCertificatesList/BaseMaterialCertificatesList";
+import BaseMaterialCertificateEditor from "../BaseMaterialCertificate/BaseMaterialCertificateEditor/BaseMaterialCertificateEditor";
+import BaseMaterialCertificatesList from "../BaseMaterialCertificate/BaseMaterialCertificatesList/BaseMaterialCertificatesList";
 
 function Layout() {
   // const navigate = useNavigate();

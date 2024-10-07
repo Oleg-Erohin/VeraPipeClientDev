@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { IBaseMaterialCertificate } from "../../models/IBaseMaterialCertificate";
+import { IBaseMaterialCertificate } from "../../../models/IBaseMaterialCertificate";
 import Modal from "react-modal";
 import BaseMaterialCertificateEditor from "../BaseMaterialCertificateEditor/BaseMaterialCertificateEditor";
-import { FileType } from "../../enums/FileType";
-import FileDownloader from "../FileDownloader/FileDownloader";
+import { FileType } from "../../../enums/FileType";
+import FileDownloader from "../../File/FileDownloader/FileDownloader";
 import BaseMaterialCertificateFilters from "../BaseMaterialCertificateFilters/BaseMaterialCertificateFilters";
-import FileRevisionsPage from "../FileRevisionsPage/FileRevisionsPage";
+import FileRevisionsPage from "../../File/FileRevisionsPage/FileRevisionsPage";
 
 function BaseMaterialCertificatesList() {
   Modal.setAppElement("#root");

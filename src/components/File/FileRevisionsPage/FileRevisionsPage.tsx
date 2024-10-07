@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { FileType } from "../../enums/FileType";
+import { FileType } from "../../../enums/FileType";
 import axios from "axios";
 import Modal from "react-modal";
-import { IFile } from "../../models/IFile";
+import { IFile } from "../../../models/IFile";
 
 interface IFileRevisionsPage {
   fileType: FileType;
