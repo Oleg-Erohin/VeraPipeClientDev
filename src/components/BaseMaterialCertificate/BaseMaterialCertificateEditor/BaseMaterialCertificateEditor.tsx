@@ -76,14 +76,9 @@ function BaseMaterialCertificateEditor(
   function inputChanged(event: any) {
     const { name, value } = event.target;
     if (name == "materialTypeName") {
-      const selectedType = baseMaterialTypes.find(
-        (type) => type.id == parseInt(value)
-      );
+      const selectedType = baseMaterialTypes.find((type) => type.id == parseInt(value));
       if (selectedType) {
-        setFormData({
-          ...formData,
-          baseMaterialType: selectedType,
-        });
+        setFormData({ ...formData, baseMaterialType: selectedType });
       }
     } else {
       setFormData({
@@ -97,40 +92,55 @@ function BaseMaterialCertificateEditor(
 
   async function onSaveChangesClicked() {
     try {
+      let baseMaterialCertificate: IBaseMaterialCertificate;
+
       if (isNewBaseMaterialCertificate) {
-        const baseMaterialCertificate = await axios.post<IBaseMaterialCertificate>(`http://localhost:8080/base-material-certificates`, formData);
+        // Create the new base material certificate
+        const response = await axios.post<IBaseMaterialCertificate>(
+          `http://localhost:8080/base-material-certificates`,
+          formData
+        );
+        baseMaterialCertificate = response.data;
 
-        if (baseMaterialCertificate && baseMaterialCertificate.data.id) {
+        if (baseMaterialCertificate && baseMaterialCertificate.id) {
           // Update formData with the new ID
-          setFormData({ ...formData, id: baseMaterialCertificate.data.id });
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            id: baseMaterialCertificate.id,
+          }));
 
-          // Dispatch action to update the AppState with the new ID
+          // Update the resource ID for the file editor
+          if (fileEditorRef.current) {
+            fileEditorRef.current.saveFile();
+          }
+
+          // Optionally, dispatch action to update Redux state with the new ID
           // dispatch({
           //   type: ActionType.UpdateNewCreatedComponentId,
-          //   payload: baseMaterialCertificate.data.id,
+          //   payload: baseMaterialCertificate.id,
           // });
         }
       } else {
+        // Update the existing base material certificate
         await axios.put(
           `http://localhost:8080/base-material-certificates`,
           formData
         );
+
+        if (fileEditorRef.current) {
+          fileEditorRef.current.saveFile();
+        }
       }
-      // if(isFileChanged){
-      //   await axios.post(
-      //     `http://localhost:8080/files`,
-      //     file
-      //   );
-      if (fileEditorRef.current) {
-        fileEditorRef.current.saveFile();
-      }
-      if (isNewBaseMaterialCertificate) {
-        setNotification(Notifications.BASE_MATERIAL_CERTIFICATE_CREATE);
-        setNotificationModalIsOpen(true);
-      } else {
-        setNotification(Notifications.BASE_MATERIAL_CERTIFICATE_UPDATE);
-        setNotificationModalIsOpen(true);
-      }
+
+      // Show notification
+      setNotification(
+        isNewBaseMaterialCertificate
+          ? Notifications.BASE_MATERIAL_CERTIFICATE_CREATE
+          : Notifications.BASE_MATERIAL_CERTIFICATE_UPDATE
+      );
+      setNotificationModalIsOpen(true);
+
+      // Reload the page
       window.location.reload();
     } catch (error: any) {
       alert(error.response.data.errorMessage);
@@ -143,17 +153,40 @@ function BaseMaterialCertificateEditor(
 
   async function onDeleteConfirmClicked() {
     try {
+      // Delete the base material certificate
+      // const certDeleteResponse = 
       await axios.delete(
         `http://localhost:8080/base-material-certificates/${formData.id}`
       );
-      setNotification(Notifications.BASE_MATERIAL_CERTIFICATE_DELETE);
-      setNotificationModalIsOpen(true);
-      window.location.reload();
+  
+      // Ensure the certificate is successfully deleted
+      // if (certDeleteResponse.status === 200) {
+        // Delete all file revisions related to this base material certificate
+        // const fileDeleteResponse = await axios.delete(
+        //   `http://localhost:8080/delete-all-file-revisions`,
+        //   { params: { fileType: FileType.BASE_MATERIAL_CERTIFICATE, resourceId: formData.id } }
+        // );
+  
+        // Check if file deletion is successful
+        // if (fileDeleteResponse.status === 200) {
+          // Show the notification
+          setNotification(Notifications.BASE_MATERIAL_CERTIFICATE_DELETE);
+          setNotificationModalIsOpen(true);
+  
+          // Reload the page after successful deletion
+          window.location.reload();
+        // } else {
+        //   console.error('Failed to delete related files.');
+        // }
+      // } else {
+      //   console.error('Failed to delete the base material certificate.');
+      // }
     } catch (error: any) {
-      alert(error.response.data.errorMessage);
+      console.error("Error occurred:", error);
+      alert(error.response?.data?.errorMessage || 'Error occurred during deletion.');
     }
   }
-
+  
   return (
     <div className="BaseMaterialCertificateEditor">
       <button onClick={() => openEditModal()}>

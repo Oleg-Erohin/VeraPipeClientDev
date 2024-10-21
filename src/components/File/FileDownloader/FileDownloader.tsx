@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FileType } from "../../../enums/FileType";
 import axios from "axios";
-import { IBaseMaterialCertificate } from "../../../models/IBaseMaterialCertificate";
 import { IFile } from "../../../models/IFile";
 interface IFileDownloader {
   fileType: FileType;
@@ -14,6 +13,29 @@ function FileDownloader(props: IFileDownloader) {
     strFileType: props.fileType,
     resourceId: props.resourceId,
   });
+  const [isFileExist, setIsFileExist] = useState<boolean>(false);
+
+
+  useEffect(() => {
+    // Check if file exists when the component mounts
+    checkIfFileExists();
+  }, []);
+
+  // Function to check if file exists
+  async function checkIfFileExists() {
+    try {
+      const response = await axios.get(`http://localhost:8080/files/is-exist`, {
+        params: {
+          fileType: props.fileType,
+          resourceId: props.resourceId,
+        },
+      });
+      setIsFileExist(response.data);
+    } catch (error: any) {
+      console.error("Error checking file existence: ", error);
+    }
+  }
+
   async function getFile() {
     try {
       const response = await axios.get(`http://localhost:8080/files/get-file`, {
@@ -24,20 +46,20 @@ function FileDownloader(props: IFileDownloader) {
         },
       });
 
-      debugger;
       if (response.data.id) {
         setFile(response.data);
+        downloadFile();
       }
     } catch (error: any) {
       console.error("Error fetching File: ", error);
     }
   }
 
-  useEffect(() => {
-    if (file?.file) {
-      downloadFile();
-    }
-  }, [file]);
+  // useEffect(() => {
+  //   if (file?.file) {
+  //     downloadFile();
+  //   }
+  // }, [file]);
 
   function downloadFile() {
     // Decode the Base64 string to a binary string
@@ -65,7 +87,7 @@ function FileDownloader(props: IFileDownloader) {
   }
   return (
     <div>
-      <button onClick={getFile}>Download File</button>
+      <button onClick={getFile} disabled={!isFileExist}>Download File</button>
     </div>
   );
 }

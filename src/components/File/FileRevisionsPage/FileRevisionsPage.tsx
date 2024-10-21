@@ -11,13 +11,38 @@ interface IFileRevisionsPage {
 
 function FileRevisionsPage(props: IFileRevisionsPage) {
   const [revisions, setRevisions] = useState<string[]>([]);
-  const [isRevisionsModalOpen, setIsRevisionsModalOpen] =
-    useState<boolean>(false);
+  const [isRevisionsModalOpen, setIsRevisionsModalOpen] = useState<boolean>(false);
+  const [hasRevisions, setHasRevisions] = useState<boolean>(false);
 
   const [file, setFile] = useState<IFile>({
     strFileType: props.fileType,
     resourceId: props.resourceId,
   });
+
+  // Fetch revisions on component mount
+  useEffect(() => {
+    async function fetchRevisions() {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/files/get-revisions`,
+          {
+            params: {
+              fileType: props.fileType,
+              resourceId: props.resourceId,
+            },
+          }
+        );
+        if (response.data) {
+          setRevisions(response.data);
+          setHasRevisions(response.data.length > 0); // Update hasRevisions when data is fetched
+        }
+      } catch (error: any) {
+        console.error("Error fetching revisions: ", error);
+      }
+    }
+
+    fetchRevisions(); // Call the function on mount
+  }, [props.fileType, props.resourceId]); // Only refetch if props change
 
   async function getFile() {
     try {
@@ -29,7 +54,6 @@ function FileRevisionsPage(props: IFileRevisionsPage) {
         },
       });
 
-      debugger;
       if (response.data.id) {
         setFile(response.data);
       }
@@ -94,8 +118,15 @@ function FileRevisionsPage(props: IFileRevisionsPage) {
 
   return (
     <div>
-      <button onClick={onRevisionsClicked}>Revisions</button>
-      <Modal
+      <button
+        onClick={onRevisionsClicked}
+        disabled={!hasRevisions}
+        style={{
+          cursor: hasRevisions ? "pointer" : "not-allowed",
+        }}
+      >
+        Revisions
+      </button>      <Modal
         isOpen={isRevisionsModalOpen}
         onRequestClose={() => setIsRevisionsModalOpen(false)}
       >
