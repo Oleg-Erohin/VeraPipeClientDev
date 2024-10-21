@@ -9,17 +9,20 @@ interface IFileDownloader {
 }
 
 function FileDownloader(props: IFileDownloader) {
-  const [file, setFile] = useState<IFile>({
-    strFileType: props.fileType,
-    resourceId: props.resourceId,
-  });
+  const [file, setFile] = useState<IFile | null>(null); // Start with null since file may not exist initially
   const [isFileExist, setIsFileExist] = useState<boolean>(false);
-
 
   useEffect(() => {
     // Check if file exists when the component mounts
     checkIfFileExists();
   }, []);
+
+  useEffect(() => {
+    // Trigger file download when the file is set
+    if (file) {
+      downloadFile();
+    }
+  }, [file]); // Watch for changes in the file state
 
   // Function to check if file exists
   async function checkIfFileExists() {
@@ -47,26 +50,20 @@ function FileDownloader(props: IFileDownloader) {
       });
 
       if (response.data.id) {
-        setFile(response.data);
-        downloadFile();
+        setFile(response.data); // The downloadFile() will be called via useEffect when file state updates
       }
     } catch (error: any) {
       console.error("Error fetching File: ", error);
     }
   }
 
-  // useEffect(() => {
-  //   if (file?.file) {
-  //     downloadFile();
-  //   }
-  // }, [file]);
-
   function downloadFile() {
+    if (!file) return;
+    
     // Decode the Base64 string to a binary string
     const fileData = file?.file;
     if (fileData) {
       const binaryString = atob(fileData);
-      // Convert the binary string to a Uint8Array
       const byteNumbers = new Array(binaryString.length);
       for (let i = 0; i < binaryString.length; i++) {
         byteNumbers[i] = binaryString.charCodeAt(i);
@@ -85,6 +82,7 @@ function FileDownloader(props: IFileDownloader) {
       document.body.removeChild(link); // Clean up
     }
   }
+
   return (
     <div>
       <button onClick={getFile} disabled={!isFileExist}>Download File</button>

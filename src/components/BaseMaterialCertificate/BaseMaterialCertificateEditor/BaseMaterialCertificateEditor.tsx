@@ -20,7 +20,6 @@ function BaseMaterialCertificateEditor(
 ) {
   Modal.setAppElement("#root");
 
-  // const dispatch = useDispatch(); // Redux dispatch to update the state
   const fileEditorRef = useRef<IFileEditorPublicMethods>(null);
   const [isChangesMade, setIsChangesMade] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -113,12 +112,6 @@ function BaseMaterialCertificateEditor(
           if (fileEditorRef.current) {
             fileEditorRef.current.saveFile();
           }
-
-          // Optionally, dispatch action to update Redux state with the new ID
-          // dispatch({
-          //   type: ActionType.UpdateNewCreatedComponentId,
-          //   payload: baseMaterialCertificate.id,
-          // });
         }
       } else {
         // Update the existing base material certificate
@@ -147,40 +140,17 @@ function BaseMaterialCertificateEditor(
     }
   }
 
-  // function saveFile() {
-  //   const isSaveClicked: boolean = true;
-  // }
-
   async function onDeleteConfirmClicked() {
     try {
-      // Delete the base material certificate
-      // const certDeleteResponse = 
       await axios.delete(
         `http://localhost:8080/base-material-certificates/${formData.id}`
       );
-  
-      // Ensure the certificate is successfully deleted
-      // if (certDeleteResponse.status === 200) {
-        // Delete all file revisions related to this base material certificate
-        // const fileDeleteResponse = await axios.delete(
-        //   `http://localhost:8080/delete-all-file-revisions`,
-        //   { params: { fileType: FileType.BASE_MATERIAL_CERTIFICATE, resourceId: formData.id } }
-        // );
-  
-        // Check if file deletion is successful
-        // if (fileDeleteResponse.status === 200) {
-          // Show the notification
           setNotification(Notifications.BASE_MATERIAL_CERTIFICATE_DELETE);
           setNotificationModalIsOpen(true);
   
           // Reload the page after successful deletion
           window.location.reload();
-        // } else {
-        //   console.error('Failed to delete related files.');
-        // }
-      // } else {
-      //   console.error('Failed to delete the base material certificate.');
-      // }
+
     } catch (error: any) {
       console.error("Error occurred:", error);
       alert(error.response?.data?.errorMessage || 'Error occurred during deletion.');

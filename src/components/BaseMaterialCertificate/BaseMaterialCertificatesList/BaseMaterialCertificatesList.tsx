@@ -12,9 +12,6 @@ function BaseMaterialCertificatesList() {
   Modal.setAppElement("#root");
   type SortOrder = "ascending" | "descending";
 
-  // const baseMaterialCertificates: IBaseMaterialCertificate[] = useSelector(
-  //   (state: AppState) => state.baseMaterialCertificates
-  // );
   const [baseMaterialCertificates, setBaseMaterialCertificates] = useState<IBaseMaterialCertificate[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
@@ -59,11 +56,6 @@ function BaseMaterialCertificatesList() {
     return <div>Error fetching base material certificates</div>;
   }
 
-  // function openEditModal(baseMaterialCertificate: IBaseMaterialCertificate) {
-  //   setSelectedCertificate(baseMaterialCertificate);
-  //   setEditModalIsOpen(true);
-  // }
-
   function closeEditModal() {
     setEditModalIsOpen(false);
     setSelectedCertificate(null);
@@ -91,10 +83,6 @@ function BaseMaterialCertificatesList() {
       setIsError(true);
     }
   }
-
-  // function onEditClicked(baseMaterialCertificate: IBaseMaterialCertificate) {
-  //   openEditModal(baseMaterialCertificate);
-  // }
 
   function handleSort(column: keyof IBaseMaterialCertificate) {
     const newSortOrder =
@@ -146,9 +134,6 @@ function BaseMaterialCertificatesList() {
   return (
     <div className="BaseMaterialCertificatesList">
       <h2>Base Material Certificates</h2>
-      {/* <button onClick={() => onEditClicked(defaultBaseMaterialCertificate)}>
-        Add new
-      </button> */}
       {
         <BaseMaterialCertificateEditor
           baseMaterialCertificate={defaultBaseMaterialCertificate}
@@ -201,11 +186,6 @@ function BaseMaterialCertificatesList() {
                     }
                   </td>
                   <td>
-                    {/* <button
-                      onClick={() => onEditClicked(baseMaterialCertificate)}
-                    >
-                      Edit
-                    </button> */}
                     {
                       <BaseMaterialCertificateEditor
                         baseMaterialCertificate={baseMaterialCertificate}
