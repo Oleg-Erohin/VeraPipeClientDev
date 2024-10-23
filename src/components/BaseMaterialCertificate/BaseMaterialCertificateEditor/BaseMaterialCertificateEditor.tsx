@@ -5,11 +5,8 @@ import { IBaseMaterialType } from "../../../models/IBaseMaterialType";
 import Modal from "react-modal";
 import { Notifications } from "../../../enums/Notificatios";
 import NotificationWindow from "../../NotificationWindow/NotificationWindow";
-import { IFile } from "../../../models/IFile";
 import { FileType } from "../../../enums/FileType";
 import FileEditor, { IFileEditorPublicMethods } from "../../File/FileEditor/FileEditor";
-import { useDispatch } from "react-redux";
-import { ActionType } from "../../../redux/action-type";
 
 interface BaseMaterialCertificateEditorProps {
   baseMaterialCertificate: IBaseMaterialCertificate;
@@ -91,21 +88,19 @@ function BaseMaterialCertificateEditor(
 
   async function onSaveChangesClicked() {
     try {
-      let baseMaterialCertificate: IBaseMaterialCertificate;
-
       if (isNewBaseMaterialCertificate) {
         // Create the new base material certificate
-        const response = await axios.post<IBaseMaterialCertificate>(
+        const response = await axios.post<number>(
           `http://localhost:8080/base-material-certificates`,
           formData
         );
-        baseMaterialCertificate = response.data;
+        let newResourceId: number = response.data;
 
-        if (baseMaterialCertificate && baseMaterialCertificate.id) {
+        if (newResourceId) {
           // Update formData with the new ID
           setFormData((prevFormData) => ({
             ...prevFormData,
-            id: baseMaterialCertificate.id,
+            id: newResourceId,
           }));
 
           // Update the resource ID for the file editor
@@ -145,18 +140,18 @@ function BaseMaterialCertificateEditor(
       await axios.delete(
         `http://localhost:8080/base-material-certificates/${formData.id}`
       );
-          setNotification(Notifications.BASE_MATERIAL_CERTIFICATE_DELETE);
-          setNotificationModalIsOpen(true);
-  
-          // Reload the page after successful deletion
-          window.location.reload();
+      setNotification(Notifications.BASE_MATERIAL_CERTIFICATE_DELETE);
+      setNotificationModalIsOpen(true);
+
+      // Reload the page after successful deletion
+      window.location.reload();
 
     } catch (error: any) {
       console.error("Error occurred:", error);
       alert(error.response?.data?.errorMessage || 'Error occurred during deletion.');
     }
   }
-  
+
   return (
     <div className="BaseMaterialCertificateEditor">
       <button onClick={() => openEditModal()}>

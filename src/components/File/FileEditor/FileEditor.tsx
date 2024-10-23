@@ -42,6 +42,12 @@ function FileEditor(props: IFileEditor, ref: Ref<IFileEditorPublicMethods>) {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (!props.isNewComponent && newFileForm.resourceId) {
+      saveFile();
+    }
+  }, [newFileForm.resourceId]); // This triggers when resourceId is updated  
+
   function fetchData() {
     if (!isNewComponent) {
       getFileData();
