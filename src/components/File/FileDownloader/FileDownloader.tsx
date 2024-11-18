@@ -11,12 +11,6 @@ interface IFileDownloader {
 
 function FileDownloader(props: IFileDownloader) {
   const [file, setFile] = useState<IFile | null>(null); // Start with null since file may not exist initially
-  // const [isFileExist, setIsFileExist] = useState<boolean>(false);
-
-  useEffect(() => {
-    // Check if file exists when the component mounts
-    // checkIfFileExists();
-  }, []);
 
   useEffect(() => {
     // Trigger file download when the file is set
@@ -24,21 +18,6 @@ function FileDownloader(props: IFileDownloader) {
       downloadFile();
     }
   }, [file]); // Watch for changes in the file state
-
-  // Function to check if file exists
-  // async function checkIfFileExists() {
-  //   try {
-  //     const response = await axios.get(`http://localhost:8080/files/is-exist`, {
-  //       params: {
-  //         fileType: props.fileType,
-  //         resourceId: props.resourceId,
-  //       },
-  //     });
-  //     setIsFileExist(response.data);
-  //   } catch (error: any) {
-  //     console.error("Error checking file existence: ", error);
-  //   }
-  // }
 
   async function getFile() {
     try {

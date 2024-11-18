@@ -13,7 +13,6 @@ interface IFileRevisionsPage {
 function FileRevisionsPage(props: IFileRevisionsPage) {
   const [revisions, setRevisions] = useState<string[]>([]);
   const [isRevisionsModalOpen, setIsRevisionsModalOpen] = useState<boolean>(false);
-  // const [hasRevisions, setHasRevisions] = useState<boolean>(false);
 
   const [file, setFile] = useState<IFile>({
     strFileType: props.fileType,
