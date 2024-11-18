@@ -16,9 +16,9 @@
     - Remove "previous revisions" when creating new component - Aviad @done
     - Do not get previous files when creating new component - Aviad @done
     - Get revisions and "see previous revision" (button) (Aviad) @done
-    - Fix the resourceId in file when creating new component (props send id = -1 on create and real id on update) (Creating new component sends id -1 and file cannot be attached to this id)
-    - When downloading previous revisions the file is only downloading from second click. UseState issue. Use file downloader
-    - In FileRevfisionsPage delete all file downloader functionality
+    - Fix the resourceId in file when creating new component (props send id = -1 on create and real id on update) (Creating new component sends id -1 and file cannot be attached to this id) @done
+    - When downloading previous revisions the file is only downloading from second click. UseState issue. Use file downloader @done
+    - In FileRevisionsPage delete all file downloader functionality
 - Implement coordinates (using ICoordinate)
     - Change coordinates structure to be a point and not polygon - Oleg @done
     - Make coordinates correspond with server - Oleg @done

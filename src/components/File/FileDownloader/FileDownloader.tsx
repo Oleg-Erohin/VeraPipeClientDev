@@ -6,15 +6,16 @@ interface IFileDownloader {
   fileType: FileType;
   resourceId: number;
   revision?: string;
+  isExist: boolean;
 }
 
 function FileDownloader(props: IFileDownloader) {
   const [file, setFile] = useState<IFile | null>(null); // Start with null since file may not exist initially
-  const [isFileExist, setIsFileExist] = useState<boolean>(false);
+  // const [isFileExist, setIsFileExist] = useState<boolean>(false);
 
   useEffect(() => {
     // Check if file exists when the component mounts
-    checkIfFileExists();
+    // checkIfFileExists();
   }, []);
 
   useEffect(() => {
@@ -25,19 +26,19 @@ function FileDownloader(props: IFileDownloader) {
   }, [file]); // Watch for changes in the file state
 
   // Function to check if file exists
-  async function checkIfFileExists() {
-    try {
-      const response = await axios.get(`http://localhost:8080/files/is-exist`, {
-        params: {
-          fileType: props.fileType,
-          resourceId: props.resourceId,
-        },
-      });
-      setIsFileExist(response.data);
-    } catch (error: any) {
-      console.error("Error checking file existence: ", error);
-    }
-  }
+  // async function checkIfFileExists() {
+  //   try {
+  //     const response = await axios.get(`http://localhost:8080/files/is-exist`, {
+  //       params: {
+  //         fileType: props.fileType,
+  //         resourceId: props.resourceId,
+  //       },
+  //     });
+  //     setIsFileExist(response.data);
+  //   } catch (error: any) {
+  //     console.error("Error checking file existence: ", error);
+  //   }
+  // }
 
   async function getFile() {
     try {
@@ -85,7 +86,7 @@ function FileDownloader(props: IFileDownloader) {
 
   return (
     <div>
-      <button onClick={getFile} disabled={!isFileExist}>Download File</button>
+      <button onClick={getFile} disabled={!props.isExist}>Download File</button>
     </div>
   );
 }

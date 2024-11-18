@@ -8,11 +8,19 @@ import FileDownloader from "../../File/FileDownloader/FileDownloader";
 import BaseMaterialCertificateFilters from "../BaseMaterialCertificateFilters/BaseMaterialCertificateFilters";
 import FileRevisionsPage from "../../File/FileRevisionsPage/FileRevisionsPage";
 
+interface IBaseMaterialCertificateWithFileData {
+  baseMaterialCertificate: IBaseMaterialCertificate;
+  isExist: boolean;
+}
+
 function BaseMaterialCertificatesList() {
   Modal.setAppElement("#root");
   type SortOrder = "ascending" | "descending";
 
+  const currentFileType: FileType = FileType.BASE_MATERIAL_CERTIFICATE;
+
   const [baseMaterialCertificates, setBaseMaterialCertificates] = useState<IBaseMaterialCertificate[]>([]);
+  let [resourceWithFileDataArray, setResourceWithFileDataArray] = useState<IBaseMaterialCertificateWithFileData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
@@ -26,8 +34,7 @@ function BaseMaterialCertificatesList() {
   const [sortColumn, setSortColumn] = useState<keyof IBaseMaterialCertificate | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>("ascending");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3;
-
+  const itemsPerPage = 5;
   const defaultBaseMaterialCertificate: IBaseMaterialCertificate = {
     id: -1,
     name: "",
@@ -41,11 +48,46 @@ function BaseMaterialCertificatesList() {
 
   useEffect(() => {
     fetchData();
-    setIsLoading(false);
   }, []);
 
+  // Function to check if file exists
+  async function checkIfFileExists(currentId: number) {
+    try {
+      const response = await axios.get(`http://localhost:8080/files/is-exist`, {
+        params: {
+          fileType: currentFileType,
+          resourceId: currentId,
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error("Error checking file existence: ", error);
+    }
+  }
+
   async function fetchData() {
-    await getBaseMaterialCertificates();
+    try {
+      const responseBaseMaterialCertificates = await axios.get(`http://localhost:8080/base-material-certificates`);
+      const baseMaterialCertificates: IBaseMaterialCertificate[] = responseBaseMaterialCertificates.data;
+
+      const tempArray: IBaseMaterialCertificateWithFileData[] = [];
+
+      for (let i = 0; i < baseMaterialCertificates.length; i++) {
+        const isExist = await checkIfFileExists(baseMaterialCertificates[i].id);
+        let tempData: IBaseMaterialCertificateWithFileData;
+        tempData = { baseMaterialCertificate: baseMaterialCertificates[i], isExist: isExist };
+        tempArray.push(tempData);
+      }
+
+      setResourceWithFileDataArray(tempArray);
+      setBaseMaterialCertificates(baseMaterialCertificates);
+      setFilteredCertificates(baseMaterialCertificates);
+    } catch (error: any) {
+      console.error("Error fetching base material certificates:", error);
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   if (isLoading) {
@@ -67,21 +109,6 @@ function BaseMaterialCertificatesList() {
 
   function closeFiltersModal() {
     setFiltersModalIsOpen(false);
-  }
-
-  async function getBaseMaterialCertificates() {
-    try {
-      const responseBaseMaterialCertificates = await axios.get(
-        `http://localhost:8080/base-material-certificates`
-      );
-      const baseMaterialCertificates: IBaseMaterialCertificate[] =
-        responseBaseMaterialCertificates.data;
-      setBaseMaterialCertificates(baseMaterialCertificates);
-      setFilteredCertificates(baseMaterialCertificates);
-    } catch (error: any) {
-      console.error("Error fetching base material certificates:", error);
-      setIsError(true);
-    }
   }
 
   function handleSort(column: keyof IBaseMaterialCertificate) {
@@ -134,11 +161,7 @@ function BaseMaterialCertificatesList() {
   return (
     <div className="BaseMaterialCertificatesList">
       <h2>Base Material Certificates</h2>
-      {
-        <BaseMaterialCertificateEditor
-          baseMaterialCertificate={defaultBaseMaterialCertificate}
-        />
-      }
+      {<BaseMaterialCertificateEditor baseMaterialCertificate={defaultBaseMaterialCertificate} />}
       {baseMaterialCertificates.length > 0 ? (
         <div>
           <button onClick={() => openFiltersModal()}>Filters</button>
@@ -171,37 +194,35 @@ function BaseMaterialCertificatesList() {
               </tr>
             </thead>
             <tbody>
-              {currentCertificates.map((baseMaterialCertificate) => (
-                <tr key={baseMaterialCertificate.id}>
-                  <td>{baseMaterialCertificate.name}</td>
-                  <td>{baseMaterialCertificate.heatNum}</td>
-                  <td>{baseMaterialCertificate.lotNum}</td>
-                  <td>{baseMaterialCertificate.baseMaterialType.name}</td>
-                  <td>
-                    {
+              {resourceWithFileDataArray.map(resourceWithFileData => {
+                return (
+                  <tr key={resourceWithFileData.baseMaterialCertificate.id}>
+                    <td>{resourceWithFileData.baseMaterialCertificate.name}</td>
+                    <td>{resourceWithFileData.baseMaterialCertificate.heatNum}</td>
+                    <td>{resourceWithFileData.baseMaterialCertificate.lotNum}</td>
+                    <td>{resourceWithFileData.baseMaterialCertificate.baseMaterialType.name}</td>
+                    <td>
                       <FileDownloader
+                        isExist={resourceWithFileData.isExist}
                         fileType={FileType.BASE_MATERIAL_CERTIFICATE}
-                        resourceId={baseMaterialCertificate.id}
+                        resourceId={resourceWithFileData.baseMaterialCertificate.id}
                       />
-                    }
-                  </td>
-                  <td>
-                    {
+                    </td>
+                    <td>
                       <BaseMaterialCertificateEditor
-                        baseMaterialCertificate={baseMaterialCertificate}
+                        baseMaterialCertificate={resourceWithFileData.baseMaterialCertificate}
                       />
-                    }
-                  </td>
-                  <td>
-                    {
+                    </td>
+                    <td>
                       <FileRevisionsPage
+                        isExist={resourceWithFileData.isExist}
                         fileType={FileType.BASE_MATERIAL_CERTIFICATE}
-                        resourceId={baseMaterialCertificate.id}
+                        resourceId={resourceWithFileData.baseMaterialCertificate.id}
                       />
-                    }
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           <div className="pagination">
