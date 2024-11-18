@@ -15,10 +15,7 @@ function FileRevisionsPage(props: IFileRevisionsPage) {
   const [revisions, setRevisions] = useState<string[]>([]);
   const [isRevisionsModalOpen, setIsRevisionsModalOpen] = useState<boolean>(false);
 
-  // const [file, setFile] = useState<IFile>({
-  //   strFileType: props.fileType,
-  //   resourceId: props.resourceId,
-  // });
+
 
   // Fetch revisions on component mount
   useEffect(() => {
@@ -26,24 +23,6 @@ function FileRevisionsPage(props: IFileRevisionsPage) {
       getRevisions()
     }; // Call the function on mount
   }, [props.fileType, props.resourceId]); // Only refetch if props change
-
-  // async function getFile() {
-  //   try {
-  //     const response = await axios.get(`http://localhost:8080/files/get-file`, {
-  //       params: {
-  //         fileType: props.fileType,
-  //         resourceId: props.resourceId,
-  //         revision: file.revision,
-  //       },
-  //     });
-
-  //     if (response.data.id) {
-  //       setFile(response.data);
-  //     }
-  //   } catch (error: any) {
-  //     console.error("Error fetching File: ", error);
-  //   }
-  // }
 
   async function getRevisions() {
     try {
@@ -69,36 +48,6 @@ function FileRevisionsPage(props: IFileRevisionsPage) {
     setIsRevisionsModalOpen(true);
   }
 
-  // function GetAndOpenPdfInNewTab(revision: string) {
-  //   setFile({ ...file, revision: revision });
-  //   getFile();
-  //   openPdfInNewTab();
-  // }
-
-  // function openPdfInNewTab() {
-  //   if (file.file) {
-  //     // Convert the base64 string to a byte array
-  //     const byteCharacters = atob(file.file);
-  //     const byteNumbers = new Array(byteCharacters.length).fill(null).map((_, i) => byteCharacters.charCodeAt(i));
-  //     const byteArray = new Uint8Array(byteNumbers);
-
-  //     // Create a Blob object from the byte array
-  //     const blob = new Blob([byteArray], { type: "application/pdf" });
-
-  //     // Create an object URL from the Blob
-  //     const blobUrl = URL.createObjectURL(blob);
-
-  //     // Try using window.open directly with the blobUrl (Chrome may still download)
-  //     const newTab = window.open(blobUrl, '_blank');
-  //     if (!newTab) {
-  //       alert("Please allow popups for this website.");
-  //     }
-
-  //     // Revoke the object URL after a short delay to avoid memory leaks
-  //     setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
-  //   }
-  // }
-
   return (
     <div>
       <button
@@ -106,7 +55,8 @@ function FileRevisionsPage(props: IFileRevisionsPage) {
         disabled={!props.isExist}
       >
         Revisions
-      </button>      <Modal
+      </button>
+      <Modal
         isOpen={isRevisionsModalOpen}
         onRequestClose={() => setIsRevisionsModalOpen(false)}
       >
@@ -121,11 +71,6 @@ function FileRevisionsPage(props: IFileRevisionsPage) {
             {revisions.map((revision) => (
               <tr>
                 <td>{revision}</td>
-                {/* <td>
-                  <button onClick={() => GetAndOpenPdfInNewTab(revision)}>
-                    Open
-                  </button>
-                </td> */}
                 <td>
                   <FileDownloader
                     isExist={props.isExist}

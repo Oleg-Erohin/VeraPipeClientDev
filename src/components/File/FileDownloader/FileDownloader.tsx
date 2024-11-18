@@ -10,7 +10,6 @@ interface IFileDownloader {
 }
 
 function FileDownloader(props: IFileDownloader) {
-  // const [file, setFile] = useState<IFile | null>(null); // Start with null since file may not exist initially
   const [file, setFile] = useState<IFile>(); // Start with null since file may not exist initially
 
   useEffect(() => {
@@ -38,32 +37,6 @@ function FileDownloader(props: IFileDownloader) {
       console.error("Error fetching File: ", error);
     }
   }
-
-  // function downloadFile() {
-  //   if (!file) return;
-    
-  //   // Decode the Base64 string to a binary string
-  //   const fileData = file?.file;
-  //   if (fileData) {
-  //     const binaryString = atob(fileData);
-  //     const byteNumbers = new Array(binaryString.length);
-  //     for (let i = 0; i < binaryString.length; i++) {
-  //       byteNumbers[i] = binaryString.charCodeAt(i);
-  //     }
-  //     const byteArray = new Uint8Array(byteNumbers);
-
-  //     // Create a Blob from the Uint8Array
-  //     const blob = new Blob([byteArray], { type: "application/pdf" });
-
-  //     // Create a link element, set its href to the blob URL, and trigger the download
-  //     const link = document.createElement("a");
-  //     link.href = URL.createObjectURL(blob);
-  //     link.download = file.name ? file.name : props.fileType; // Set the file name
-  //     document.body.appendChild(link);
-  //     link.click();
-  //     document.body.removeChild(link); // Clean up
-  //   }
-  // }
 
   function openPdfInNewTab() {
     if (file && file.file) {

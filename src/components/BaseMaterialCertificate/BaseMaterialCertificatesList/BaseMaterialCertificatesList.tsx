@@ -139,13 +139,6 @@ function BaseMaterialCertificatesList() {
     setCurrentPage(1);
   }
 
-  // const indexOfLastCertificate = currentPage * itemsPerPage;
-  // const indexOfFirstCertificate = indexOfLastCertificate - itemsPerPage;
-  // const currentCertificates = filteredCertificates.slice(
-  //   indexOfFirstCertificate,
-  //   indexOfLastCertificate
-  // );
-
   const nextPage = () => {
     if (currentPage < Math.ceil(filteredCertificates.length / itemsPerPage)) {
       setCurrentPage(currentPage + 1);
