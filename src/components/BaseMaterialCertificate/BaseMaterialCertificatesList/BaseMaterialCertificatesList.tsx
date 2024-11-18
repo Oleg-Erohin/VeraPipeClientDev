@@ -20,7 +20,7 @@ function BaseMaterialCertificatesList() {
   const currentFileType: FileType = FileType.BASE_MATERIAL_CERTIFICATE;
 
   const [baseMaterialCertificates, setBaseMaterialCertificates] = useState<IBaseMaterialCertificate[]>([]);
-  let [resourceWithFileDataArray, setResourceWithFileDataArray] = useState<IBaseMaterialCertificateWithFileData[]>([]);
+  const [resourceWithFileDataArray, setResourceWithFileDataArray] = useState<IBaseMaterialCertificateWithFileData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
@@ -139,12 +139,12 @@ function BaseMaterialCertificatesList() {
     setCurrentPage(1);
   }
 
-  const indexOfLastCertificate = currentPage * itemsPerPage;
-  const indexOfFirstCertificate = indexOfLastCertificate - itemsPerPage;
-  const currentCertificates = filteredCertificates.slice(
-    indexOfFirstCertificate,
-    indexOfLastCertificate
-  );
+  // const indexOfLastCertificate = currentPage * itemsPerPage;
+  // const indexOfFirstCertificate = indexOfLastCertificate - itemsPerPage;
+  // const currentCertificates = filteredCertificates.slice(
+  //   indexOfFirstCertificate,
+  //   indexOfLastCertificate
+  // );
 
   const nextPage = () => {
     if (currentPage < Math.ceil(filteredCertificates.length / itemsPerPage)) {
