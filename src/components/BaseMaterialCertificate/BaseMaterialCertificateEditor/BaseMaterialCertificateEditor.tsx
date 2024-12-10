@@ -12,16 +12,10 @@ interface BaseMaterialCertificateEditorProps {
   baseMaterialCertificate: IBaseMaterialCertificate;
 }
 
-function BaseMaterialCertificateEditor(
-  props: BaseMaterialCertificateEditorProps
-) {
+function BaseMaterialCertificateEditor(props: BaseMaterialCertificateEditorProps) {
   Modal.setAppElement("#root");
 
-  const fileEditorRef = useRef<IFileEditorPublicMethods>(null);
-  const [isChangesMade, setIsChangesMade] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState<boolean>(false);
-  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  //Resource specific variables
   const [formData, setFormData] = useState<IBaseMaterialCertificate>({
     id: props.baseMaterialCertificate.id,
     name: props.baseMaterialCertificate.name,
@@ -30,9 +24,14 @@ function BaseMaterialCertificateEditor(
     baseMaterialType: props.baseMaterialCertificate.baseMaterialType,
   });
   const [baseMaterialTypes, setBaseMaterialTypes] = useState<IBaseMaterialType[]>([]);
-  const isNewBaseMaterialCertificate: boolean = formData.id == -1;
+
+  //Common variables
+  const fileEditorRef = useRef<IFileEditorPublicMethods>(null);
+  const [isChangesMade, setIsChangesMade] = useState<boolean>(false);
+  const isNewResource: boolean = formData.id == -1;
   const [notification, setNotification] = useState<string>("");
   const [notificationModalIsOpen, setNotificationModalIsOpen] = useState<boolean>(false);
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
 
   useEffect(() => {
@@ -45,15 +44,6 @@ function BaseMaterialCertificateEditor(
 
   async function fetchData() {
     await getAllMaterialTypes();
-    setIsLoading(false);
-  }
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error fetching base material certificates</div>;
   }
 
   async function getAllMaterialTypes() {
@@ -65,7 +55,6 @@ function BaseMaterialCertificateEditor(
       setBaseMaterialTypes(baseMaterialTypes);
     } catch (error: any) {
       console.error("Error fetching base material types:", error);
-      setIsError(true);
     }
   }
 
@@ -88,7 +77,7 @@ function BaseMaterialCertificateEditor(
 
   async function onSaveChangesClicked() {
     try {
-      if (isNewBaseMaterialCertificate) {
+      if (isNewResource) {
         // Create the new base material certificate
         const response = await axios.post<number>(
           `http://localhost:8080/base-material-certificates`,
@@ -122,7 +111,7 @@ function BaseMaterialCertificateEditor(
 
       // Show notification
       setNotification(
-        isNewBaseMaterialCertificate
+        isNewResource
           ? Notifications.BASE_MATERIAL_CERTIFICATE_CREATE
           : Notifications.BASE_MATERIAL_CERTIFICATE_UPDATE
       );
@@ -153,21 +142,21 @@ function BaseMaterialCertificateEditor(
   }
 
   return (
-    <div className="BaseMaterialCertificateEditor">
+    <div>
       <button onClick={() => openEditModal()}>
-        {isNewBaseMaterialCertificate ? "Add new" : "Edit"}
+        {isNewResource ? "Add new" : "Edit"}
       </button>
       <Modal
         isOpen={editModalIsOpen}
         onRequestClose={() => setEditModalIsOpen(false)}
       >
-        {!isNewBaseMaterialCertificate && (
+        {!isNewResource && (
           <div>
             <h2>Edit Base Material Certificate</h2>
             <label>Certificate #: {formData.id}</label>
           </div>
         )}
-        {isNewBaseMaterialCertificate && (
+        {isNewResource && (
           <h2>Create Base Material Certificates</h2>
         )}
         <div>
@@ -207,7 +196,7 @@ function BaseMaterialCertificateEditor(
             {formData.baseMaterialType.id == 0 && (
               <option value="">Select Material Type</option>
             )}
-            {isNewBaseMaterialCertificate && <option>Select</option>}
+            {isNewResource && <option>Select</option>}
             {baseMaterialTypes.map((type) => (
               <option key={type.id} value={type.id}>
                 {type.name}
@@ -221,7 +210,7 @@ function BaseMaterialCertificateEditor(
             resourceId={formData.id}
             ref={fileEditorRef}
             setIsChangesMade={setIsChangesMade}
-            isNewComponent={isNewBaseMaterialCertificate}
+            isNewComponent={isNewResource}
           />
         </div>
         <div>
@@ -234,7 +223,7 @@ function BaseMaterialCertificateEditor(
           >
             Save
           </button>
-          {!isNewBaseMaterialCertificate && (
+          {!isNewResource && (
             <button onClick={() => setDeleteModalIsOpen(true)}>Delete</button>
           )}
         </div>

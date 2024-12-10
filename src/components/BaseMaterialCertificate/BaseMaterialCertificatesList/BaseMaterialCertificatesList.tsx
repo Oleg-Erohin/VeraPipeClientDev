@@ -10,7 +10,7 @@ import FileRevisionsPage from "../../File/FileRevisionsPage/FileRevisionsPage";
 
 interface IBaseMaterialCertificateWithFileData {
   baseMaterialCertificate: IBaseMaterialCertificate;
-  isExist: boolean;
+  isFileExist: boolean;
 }
 
 function BaseMaterialCertificatesList() {
@@ -20,13 +20,13 @@ function BaseMaterialCertificatesList() {
   const currentFileType: FileType = FileType.BASE_MATERIAL_CERTIFICATE;
 
   const [baseMaterialCertificates, setBaseMaterialCertificates] = useState<IBaseMaterialCertificate[]>([]);
-  const [resourceWithFileDataArray, setResourceWithFileDataArray] = useState<IBaseMaterialCertificateWithFileData[]>([]);
+  const [resourcesWithFileData, setResourcesWithFileData] = useState<IBaseMaterialCertificateWithFileData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [filtersModalIsOpen, setFiltersModalIsOpen] = useState(false);
   const [selectedCertificate, setSelectedCertificate] = useState<IBaseMaterialCertificate | null>(null);
-  const [filteredCertificates, setFilteredCertificates] = useState<IBaseMaterialCertificate[]>([]);
+  const [filteredResources, setFilteredResources] = useState<IBaseMaterialCertificate[]>([]);
   const [selectedNames, setSelectedNames] = useState<string[]>([]);
   const [selectedHeatNums, setSelectedHeatNums] = useState<string[]>([]);
   const [selectedLotNums, setSelectedLotNums] = useState<string[]>([]);
@@ -45,10 +45,18 @@ function BaseMaterialCertificatesList() {
       name: "",
     },
   };
+  const [filteredResourcesWithFileData, setFilteredResourcesWithFileData] = useState<IBaseMaterialCertificateWithFileData[]>([]);
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const updatedFilteredResourceWithFileDataArray:  IBaseMaterialCertificateWithFileData[]= resourcesWithFileData.filter(resource =>
+      filteredResources.some(certificate => certificate.id === resource.baseMaterialCertificate.id)
+    );
+    setFilteredResourcesWithFileData(updatedFilteredResourceWithFileDataArray);
+  }, [filteredResources, resourcesWithFileData]);
 
   // Function to check if file exists
   async function checkIfFileExists(currentId: number) {
@@ -75,13 +83,13 @@ function BaseMaterialCertificatesList() {
       for (let i = 0; i < baseMaterialCertificates.length; i++) {
         const isExist = await checkIfFileExists(baseMaterialCertificates[i].id);
         let tempData: IBaseMaterialCertificateWithFileData;
-        tempData = { baseMaterialCertificate: baseMaterialCertificates[i], isExist: isExist };
+        tempData = { baseMaterialCertificate: baseMaterialCertificates[i], isFileExist: isExist };
         tempArray.push(tempData);
       }
 
-      setResourceWithFileDataArray(tempArray);
+      setResourcesWithFileData(tempArray);
       setBaseMaterialCertificates(baseMaterialCertificates);
-      setFilteredCertificates(baseMaterialCertificates);
+      setFilteredResources(baseMaterialCertificates);
     } catch (error: any) {
       console.error("Error fetching base material certificates:", error);
       setIsError(true);
@@ -116,31 +124,31 @@ function BaseMaterialCertificatesList() {
       sortColumn === column && sortOrder === "ascending"
         ? "descending"
         : "ascending";
-
-    const sortedCertificates = [...filteredCertificates].sort(
-      (certificateA, certificateB) => {
-        let valueA = certificateA[column];
-        let valueB = certificateB[column];
-
+  
+    const sortedResources = [...filteredResourcesWithFileData].sort(
+      (resourceA, resourceB) => {
+        let valueA = resourceA.baseMaterialCertificate[column];
+        let valueB = resourceB.baseMaterialCertificate[column];
+  
         if (column === "baseMaterialType") {
-          valueA = certificateA.baseMaterialType.name;
-          valueB = certificateB.baseMaterialType.name;
+          valueA = resourceA.baseMaterialCertificate.baseMaterialType.name;
+          valueB = resourceB.baseMaterialCertificate.baseMaterialType.name;
         }
-
+  
         if (valueA < valueB) return newSortOrder === "ascending" ? -1 : 1;
         if (valueA > valueB) return newSortOrder === "ascending" ? 1 : -1;
         return 0;
       }
     );
-
+  
     setSortColumn(column);
     setSortOrder(newSortOrder);
-    setFilteredCertificates(sortedCertificates);
+    setFilteredResourcesWithFileData(sortedResources); // Update this state instead
     setCurrentPage(1);
   }
 
   const nextPage = () => {
-    if (currentPage < Math.ceil(filteredCertificates.length / itemsPerPage)) {
+    if (currentPage < Math.ceil(filteredResourcesWithFileData.length / itemsPerPage)) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -162,22 +170,22 @@ function BaseMaterialCertificatesList() {
             <thead>
               <tr>
                 <td onClick={() => handleSort("name")}>
-                  Name{" "}
+                  Name
                   {sortColumn === "name" &&
                     (sortOrder === "ascending" ? "↑" : "↓")}
                 </td>
                 <td onClick={() => handleSort("heatNum")}>
-                  Heat #{" "}
+                  Heat #
                   {sortColumn === "heatNum" &&
                     (sortOrder === "ascending" ? "↑" : "↓")}
                 </td>
                 <td onClick={() => handleSort("lotNum")}>
-                  Lot #{" "}
+                  Lot #
                   {sortColumn === "lotNum" &&
                     (sortOrder === "ascending" ? "↑" : "↓")}
                 </td>
                 <td onClick={() => handleSort("baseMaterialType")}>
-                  Material Type{" "}
+                  Material Type
                   {sortColumn === "baseMaterialType" &&
                     (sortOrder === "ascending" ? "↑" : "↓")}
                 </td>
@@ -187,7 +195,7 @@ function BaseMaterialCertificatesList() {
               </tr>
             </thead>
             <tbody>
-              {resourceWithFileDataArray.map(resourceWithFileData => {
+              {filteredResourcesWithFileData.map(resourceWithFileData => {
                 return (
                   <tr key={resourceWithFileData.baseMaterialCertificate.id}>
                     <td>{resourceWithFileData.baseMaterialCertificate.name}</td>
@@ -196,7 +204,7 @@ function BaseMaterialCertificatesList() {
                     <td>{resourceWithFileData.baseMaterialCertificate.baseMaterialType.name}</td>
                     <td>
                       <FileDownloader
-                        isExist={resourceWithFileData.isExist}
+                        isExist={resourceWithFileData.isFileExist}
                         fileType={FileType.BASE_MATERIAL_CERTIFICATE}
                         resourceId={resourceWithFileData.baseMaterialCertificate.id}
                       />
@@ -208,7 +216,7 @@ function BaseMaterialCertificatesList() {
                     </td>
                     <td>
                       <FileRevisionsPage
-                        isExist={resourceWithFileData.isExist}
+                        isExist={resourceWithFileData.isFileExist}
                         fileType={FileType.BASE_MATERIAL_CERTIFICATE}
                         resourceId={resourceWithFileData.baseMaterialCertificate.id}
                       />
@@ -224,13 +232,13 @@ function BaseMaterialCertificatesList() {
             </button>
             <span>
               Page {currentPage} of{" "}
-              {Math.ceil(filteredCertificates.length / itemsPerPage)}
+              {Math.ceil(filteredResourcesWithFileData.length / itemsPerPage)}
             </span>
             <button
               onClick={nextPage}
               disabled={
                 currentPage ===
-                Math.ceil(filteredCertificates.length / itemsPerPage)
+                Math.ceil(filteredResourcesWithFileData.length / itemsPerPage)
               }
             >
               Next
@@ -253,7 +261,7 @@ function BaseMaterialCertificatesList() {
         <BaseMaterialCertificateFilters
           baseMaterialCertificates={baseMaterialCertificates}
           onFilter={(filtered) => {
-            setFilteredCertificates(filtered);
+            setFilteredResources(filtered);
             setCurrentPage(1);
             closeFiltersModal();
           }}
