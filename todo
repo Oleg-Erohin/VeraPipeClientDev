@@ -1,11 +1,10 @@
 - Create components (List & editor for each)
     - *Base material certificate
-        - Make generic variables names (resource)
-        - Add loading message
+        - Make generic variables names (resource) @done
+        - Add loading message @done
         - Add Error handling
         - Add creation of new resources from the filters (Material type etc.)
         - Remove unnecassary code. Simplify existing
-            - Remove filteredResources. Leave only filteredResourcesWithFileData
     - *Filler material certificate
     - Isometric (PDF viewer)
     - P&ID (PDF viewer)
